@@ -1,5 +1,11 @@
 name = "hsnlookup"
 compatibility_date = "2026-04-23"
+workers_dev = true
+
+routes = [
+  { pattern = "hsnlookup.in", custom_domain = true },
+  { pattern = "www.hsnlookup.in", custom_domain = true },
+]
 
 [assets]
 directory = "./public"

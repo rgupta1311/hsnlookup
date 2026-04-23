@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node src/build.js",
-    "preview": "python3 -m http.server 8000 --directory public"
+    "preview": "python3 -m http.server 8000 --directory public",
+    "deploy": "node src/build.js && set -a && . ./.env && set +a && npx --yes wrangler@latest deploy"
   }
 }
