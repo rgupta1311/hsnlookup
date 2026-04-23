@@ -1,0 +1,6 @@
+name = "hsnlookup"
+compatibility_date = "2026-04-23"
+
+[assets]
+directory = "./public"
+not_found_handling = "404-page"
