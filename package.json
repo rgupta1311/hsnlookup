@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node src/build.js",
     "preview": "python3 -m http.server 8000 --directory public",
-    "deploy": "node src/build.js && set -a && . ./.env && set +a && npx --yes wrangler@latest deploy"
+    "deploy": "node src/build.js && set -a && . ./.env && set +a && npx --yes wrangler@latest deploy",
+    "notify": "node scripts/indexnow.js"
   }
 }

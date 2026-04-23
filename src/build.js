@@ -9,6 +9,7 @@ import {
   sectionPage,
   homePage,
   aboutPage,
+  calculatorPage,
   chaptersIndexPage,
   sectionsIndexPage,
   sitemapXml,
@@ -55,6 +56,7 @@ const stats = {
 
 write("index.html", homePage(india8, hs.chapters, sections, stats));
 write("about/index.html", aboutPage());
+write("calculator/index.html", calculatorPage());
 write("chapters/index.html", chaptersIndexPage(hs.chapters));
 write("sections/index.html", sectionsIndexPage(sections));
 
@@ -93,6 +95,7 @@ for (const c of india8) {
 const urls = [
   "/",
   "/about/",
+  "/calculator/",
   "/chapters/",
   "/sections/",
   ...[...hs.sectionMap.keys()].map((s) => `/section/${s.toLowerCase()}/`),
@@ -108,9 +111,24 @@ write("robots.txt", robotsTxt());
 mkdirSync(join(outDir, "assets"), { recursive: true });
 writeFileSync(join(outDir, "assets/style.css"), readFileSync(join(root, "src/style.css"), "utf8"));
 writeFileSync(join(outDir, "assets/search.js"), readFileSync(join(root, "src/clientSearch.js"), "utf8"));
+writeFileSync(join(outDir, "assets/calculator.js"), readFileSync(join(root, "src/calculator.js"), "utf8"));
 
 const searchIdx = buildSearchIndex(hs, india8);
 writeFileSync(join(outDir, "assets/search.json"), JSON.stringify(searchIdx));
+
+// Rates lookup for the calculator
+const ratesMap = {};
+for (const c of india8) {
+  ratesMap[c.hsn] = {
+    description: c.description,
+    bcd: c.bcd, igst: c.igst, sws: c.sws, cess: c.cess || 0,
+  };
+}
+writeFileSync(join(outDir, "assets/rates.json"), JSON.stringify(ratesMap));
+
+// IndexNow key file — lets Bing/Yandex index the site fast after push.
+const INDEXNOW_KEY = "a0fd0c7dfc4b04b561fe074f305f7dcb";
+writeFileSync(join(outDir, `${INDEXNOW_KEY}.txt`), INDEXNOW_KEY);
 
 console.log(
   `Built ${urls.length} pages · search index: ${searchIdx.length} items · ` +

@@ -35,7 +35,7 @@ function searchBarHtml({ placeholder = "Search HSN code or product (e.g. 8517, s
 </div>`;
 }
 
-function layout({ title, description, canonical, bodyHtml, jsonLd, includeSearch = true }) {
+function layout({ title, description, canonical, bodyHtml, jsonLd, includeSearch = true, extraHeadHtml = "" }) {
   const ld = jsonLd
     ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`
     : "";
@@ -57,12 +57,14 @@ function layout({ title, description, canonical, bodyHtml, jsonLd, includeSearch
 <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 <link rel="stylesheet" href="/assets/style.css">
 ${ld}
+${extraHeadHtml}
 </head>
 <body>
 <header class="site-header">
   <div class="site-header-inner">
     <a href="/" class="logo"><span class="logo-mark">हS</span>${SITE.name}</a>
     <nav>
+      <a href="/calculator/">Calculator</a>
       <a href="/chapters/">Chapters</a>
       <a href="/sections/">Sections</a>
       <a href="/about/">About</a>
@@ -372,6 +374,78 @@ export function homePage(india8s, chapters, sections, stats) {
 </section>`;
 
   return layout({ title, description, canonical, bodyHtml: body });
+}
+
+// ————— Calculator —————
+export function calculatorPage() {
+  const title = `India Customs Duty Calculator — BCD, IGST, SWS, Cess — ${SITE.name}`;
+  const description = `Free India customs duty calculator. Enter HSN and CIF value; get BCD, IGST, SWS, cess and landed cost instantly. Works offline after first load.`;
+  const canonical = SITE.origin + "/calculator/";
+
+  const body = `
+<article>
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><span>Duty calculator</span></nav>
+  <div class="hero" style="padding:32px 24px 24px;">
+    <span class="eyebrow">Free · No sign-up · Offline-capable</span>
+    <h1>India import duty calculator</h1>
+    <p class="lead">Enter an HSN code and CIF value. Get BCD, IGST, SWS, compensation cess and landed cost in one screen.</p>
+  </div>
+
+  <form id="calc-form" onsubmit="event.preventDefault();" class="calc-form">
+    <div class="calc-row">
+      <label for="calc-hsn">HSN code</label>
+      <input id="calc-hsn" name="hsn" type="text" inputmode="numeric" placeholder="e.g. 85171300" autocomplete="off" />
+      <span id="calc-hsn-desc" class="calc-hsn-desc"></span>
+    </div>
+    <p id="calc-hsn-help" class="calc-hint">Start typing an HSN number, or <a href="/">browse codes on the home page</a>.</p>
+
+    <div class="calc-grid">
+      <div class="calc-field">
+        <label for="calc-bcd">BCD %</label>
+        <input id="calc-bcd" type="number" step="0.01" min="0" value="0" />
+      </div>
+      <div class="calc-field">
+        <label for="calc-igst">IGST %</label>
+        <input id="calc-igst" type="number" step="0.01" min="0" value="18" />
+      </div>
+      <div class="calc-field">
+        <label for="calc-sws">SWS % (of BCD)</label>
+        <input id="calc-sws" type="number" step="0.01" min="0" value="10" />
+      </div>
+      <div class="calc-field">
+        <label for="calc-cess">Cess %</label>
+        <input id="calc-cess" type="number" step="0.01" min="0" value="0" />
+      </div>
+    </div>
+
+    <div class="calc-row">
+      <label for="calc-av">Assessable value (CIF + 1% landing, ₹)</label>
+      <input id="calc-av" type="number" step="1" min="0" value="100000" />
+    </div>
+  </form>
+
+  <div class="example-block" id="calc-out">
+    <p class="calc-hint">Enter an assessable value to see the landed-cost breakdown.</p>
+  </div>
+
+  <section>
+    <h2>How Indian customs duty is calculated</h2>
+    <p>Total duty on an Indian import is the sum of four components applied in order:</p>
+    <ol>
+      <li><strong>Basic Customs Duty (BCD)</strong> — applied to the assessable value (CIF + 1% landing charges).</li>
+      <li><strong>Social Welfare Surcharge (SWS)</strong> — 10% of BCD on most goods (0% on some exempted items).</li>
+      <li><strong>Compensation Cess</strong> — applied on (AV + BCD) for certain goods (tobacco, luxury cars, aerated beverages, coal, etc.).</li>
+      <li><strong>IGST</strong> — applied on (AV + BCD + SWS + Cess).</li>
+    </ol>
+    <p>Total duty = BCD + SWS + Cess + IGST. Landed cost = AV + Total duty.</p>
+    <p class="note">This calculator covers the standard duty formula. Some goods attract additional Safeguard, Anti-Dumping or Countervailing duties — consult the <a href="https://www.cbic.gov.in/" rel="nofollow noopener">CBIC tariff</a> for the exact notification applicable to your Bill of Entry.</p>
+  </section>
+</article>`;
+
+  return layout({
+    title, description, canonical, bodyHtml: body,
+    extraHeadHtml: '<script src="/assets/calculator.js" defer></script>',
+  });
 }
 
 // ————— About —————
