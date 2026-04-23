@@ -1,0 +1,66 @@
+:root {
+  --fg: #1a1a1a;
+  --fg-muted: #555;
+  --bg: #fff;
+  --accent: #0b5fff;
+  --border: #e5e5e5;
+  --panel: #f7f7f9;
+  --max: 800px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  line-height: 1.55;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.site-header {
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: var(--max); margin: 0 auto; padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.site-header .logo { font-weight: 700; color: var(--fg); font-size: 18px; }
+.site-header nav a { margin-left: 16px; color: var(--fg-muted); font-size: 14px; }
+main { max-width: var(--max); margin: 0 auto; padding: 24px 20px 60px; }
+.site-footer { max-width: var(--max); margin: 0 auto; padding: 24px 20px; border-top: 1px solid var(--border); color: var(--fg-muted); font-size: 13px; }
+
+h1 { font-size: 28px; margin: 0 0 8px; line-height: 1.25; }
+h2 { font-size: 20px; margin: 28px 0 10px; }
+p.lead { font-size: 17px; color: var(--fg-muted); margin-top: 0; }
+p.note { background: var(--panel); padding: 10px 12px; border-left: 3px solid var(--accent); font-size: 14px; }
+
+.crumbs { color: var(--fg-muted); font-size: 13px; margin-bottom: 12px; }
+.crumbs a { color: var(--fg-muted); }
+
+table {
+  width: 100%; border-collapse: collapse; margin: 8px 0 4px;
+  font-size: 15px;
+}
+th, td {
+  text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border);
+}
+th { font-weight: 600; background: var(--panel); width: 55%; }
+tr.total th, tr.total td { font-weight: 700; background: #eef3ff; }
+
+ul.code-list { list-style: none; padding: 0; margin: 12px 0; }
+ul.code-list li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+ul.code-list strong { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; margin-right: 6px; color: var(--fg); }
+ul.code-list .count { color: var(--fg-muted); font-size: 13px; }
+
+table.listing th, table.listing td { font-size: 14px; padding: 6px 10px; }
+table.listing th { width: auto; }
+
+section { margin-top: 20px; }
+.hero { padding: 8px 0 4px; }
+.hero h1 { font-size: 32px; }
+
+@media (max-width: 500px) {
+  h1 { font-size: 24px; }
+  .hero h1 { font-size: 26px; }
+  th { width: 62%; }
+}
