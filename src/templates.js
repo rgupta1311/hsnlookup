@@ -240,12 +240,13 @@ ${includeSearch ? '<script src="/assets/search.js" defer></script>' : ""}
 }
 
 // ————— 8-digit HSN page —————
-export function hsnPage(code, parent6, productSlug = null) {
+export function hsnPage(code, parent6, productSlug = null, siblings = []) {
   const example = computeDuty(100000, code);
   const ch = pad2(code.chapter);
   const heading4 = code.hsn.slice(0, 4);
-  const title = `HSN ${code.hsn} — ${code.description} — Customs Duty India`;
-  const description = `${code.description}. HSN ${code.hsn}: BCD ${code.bcd}%, IGST ${code.igst}%, SWS ${code.sws}% of BCD${code.cess ? `, Cess ${code.cess}%` : ""}. Landed cost on ₹1,00,000 = ${inr(example.landed)}.`;
+  const shortDesc = code.description.length > 50 ? code.description.slice(0, 47) + "…" : code.description;
+  const title = `HSN ${code.hsn} ${shortDesc} — ${example.effectiveRate}% Customs Duty India`;
+  const description = `Customs duty on HSN ${code.hsn} (${code.description}) in India: ${example.effectiveRate}% effective rate. BCD ${code.bcd}%, IGST ${code.igst}%, SWS ${code.sws}% of BCD${code.cess ? `, Cess ${code.cess}%` : ""}. Landed cost on ₹1,00,000 CIF = ${inr(example.landed)}.`;
   const canonical = `${SITE.origin}${hsnUrl(code.hsn)}`;
 
   const faqJsonLd = {
@@ -352,6 +353,13 @@ export function hsnPage(code, parent6, productSlug = null) {
   </section>
 
   ${tiersTable}
+
+  ${siblings.length > 0 ? `<div class="table-wrap"><h2>Other 8-digit HSNs under subheading ${esc(code.hsn.slice(0, 6))}</h2>
+    <table class="listing">
+      <thead><tr><th>HSN</th><th>Description</th><th class="num">BCD</th><th class="num">IGST</th></tr></thead>
+      <tbody>${siblings.map((s) => `<tr><td><a href="${hsnUrl(s.hsn)}">${s.hsn}</a></td><td>${esc(s.description)}</td><td class="num">${s.bcd}%</td><td class="num">${s.igst}%</td></tr>`).join("")}</tbody>
+    </table>
+  </div>` : ""}
 
   ${productsHtml ? `<section class="products"><h2>Common products</h2><ul>${productsHtml}</ul></section>` : ""}
 

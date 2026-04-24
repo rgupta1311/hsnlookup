@@ -126,9 +126,22 @@ for (const s of hs.subheadings) {
 }
 
 const productSlugByHsn = new Map(PRODUCTS.map((p) => [p.hsn, p.slug]));
+// Siblings map: all 8-digit codes sharing a 6-digit parent. Precomputed
+// once so every hsnPage call pulls in O(k) where k = siblings.
+const siblingsBy6 = new Map();
+for (const c of india8) {
+  const parent6 = c.hsn.slice(0, 6);
+  if (!siblingsBy6.has(parent6)) siblingsBy6.set(parent6, []);
+  siblingsBy6.get(parent6).push(c);
+}
 for (const c of india8) {
   const parent6 = hs.byCode.get(c.hsn.slice(0, 6));
-  write(`hsn/${c.hsn}/index.html`, hsnPage(c, parent6, productSlugByHsn.get(c.hsn) || null));
+  const allInSubheading = siblingsBy6.get(c.hsn.slice(0, 6)) || [];
+  const siblings = allInSubheading.filter((s) => s.hsn !== c.hsn).slice(0, 20);
+  write(
+    `hsn/${c.hsn}/index.html`,
+    hsnPage(c, parent6, productSlugByHsn.get(c.hsn) || null, siblings),
+  );
 }
 
 const urls = [
