@@ -10,6 +10,7 @@ import {
   homePage,
   aboutPage,
   calculatorPage,
+  customsDutyGuidePage,
   chaptersIndexPage,
   sectionsIndexPage,
   sitemapXml,
@@ -57,6 +58,7 @@ const stats = {
 write("index.html", homePage(india8, hs.chapters, sections, stats));
 write("about/index.html", aboutPage());
 write("calculator/index.html", calculatorPage());
+write("guide/customs-duty/index.html", customsDutyGuidePage());
 write("chapters/index.html", chaptersIndexPage(hs.chapters));
 write("sections/index.html", sectionsIndexPage(sections));
 
@@ -96,6 +98,7 @@ const urls = [
   "/",
   "/about/",
   "/calculator/",
+  "/guide/customs-duty/",
   "/chapters/",
   "/sections/",
   ...[...hs.sectionMap.keys()].map((s) => `/section/${s.toLowerCase()}/`),
