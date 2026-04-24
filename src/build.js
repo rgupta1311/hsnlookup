@@ -13,6 +13,8 @@ import {
   customsDutyGuidePage,
   productDutyPage,
   dutyIndexPage,
+  privacyPage,
+  contactPage,
   chaptersIndexPage,
   sectionsIndexPage,
   sitemapXml,
@@ -78,6 +80,8 @@ const stats = {
 
 write("index.html", homePage(india8, hs.chapters, sections, stats));
 write("about/index.html", aboutPage());
+write("privacy/index.html", privacyPage());
+write("contact/index.html", contactPage());
 write("calculator/index.html", calculatorPage());
 write("guide/customs-duty/index.html", customsDutyGuidePage());
 
@@ -130,6 +134,8 @@ for (const c of india8) {
 const urls = [
   "/",
   "/about/",
+  "/privacy/",
+  "/contact/",
   "/calculator/",
   "/guide/customs-duty/",
   "/duty/",

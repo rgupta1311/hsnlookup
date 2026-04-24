@@ -23,6 +23,113 @@ const sectionUrl = (s) => `/section/${s.toLowerCase()}/`;
 
 const searchIcon = `<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 3.362 9.848l3.145 3.146a.75.75 0 1 0 1.06-1.06l-3.145-3.146A5.5 5.5 0 0 0 9 3.5ZM5 9a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" clip-rule="evenodd"/></svg>`;
 
+// Short chapter-context paragraph. Surfaces on every HSN page for
+// on-topic relevance and to lift thin pages over the ~500-word bar
+// that Google and AdSense look for. Covers all 97 chapters with a
+// one-paragraph description of what the chapter covers and the
+// typical tariff pattern for it.
+function chapterContextBlurb(chapterNum) {
+  const map = {
+    1: "Chapter 1 covers live animals. Imports are tightly regulated with a 30% statutory BCD; genuine imports are usually for zoos, research or specific breeding stock under end-use notifications.",
+    2: "Chapter 2 covers meat and edible meat offal. BCD is 30% statutory; imports require FSSAI registration and sanitary certification from the exporting country.",
+    3: "Chapter 3 covers fish, crustaceans and molluscs. Rates vary by species; live seafood for aquaculture often gets concessional rates under end-use notifications.",
+    4: "Chapter 4 covers dairy, eggs, honey and edible products of animal origin. BCD on dairy imports is among the highest in the tariff (often 30-60%) to protect domestic dairy.",
+    5: "Chapter 5 covers unlisted products of animal origin — bones, horns, feathers, insect extracts. Rates typically 2.5%-10%.",
+    6: "Chapter 6 covers live trees, plants, bulbs and cut flowers. Typically 10%-30% BCD; phytosanitary certification required.",
+    7: "Chapter 7 covers edible vegetables and certain roots. Pulses and specific vegetables often have nil BCD under special notifications to manage food security.",
+    8: "Chapter 8 covers edible fruits and nuts. BCD ranges from 30% to 100%+ depending on the item; walnuts and areca nuts are among the highest-tariffed.",
+    9: "Chapter 9 covers coffee, tea, spices. BCD on tea and spices is often 100% to protect India's own plantation economy.",
+    10: "Chapter 10 covers cereals. Most have 0% BCD; a few have state-trading restrictions under DGFT.",
+    11: "Chapter 11 covers milling products — flour, starch, wheat gluten. BCD typically 30%.",
+    12: "Chapter 12 covers oilseeds, grains, industrial plants, fodder. Mixed rates; crude oils for processing often get concessions.",
+    13: "Chapter 13 covers gums, resins and vegetable saps. Low BCD (usually 5-15%) as most are industrial inputs.",
+    14: "Chapter 14 covers other vegetable products — coir, bamboo, straws. BCD usually 10%-30%.",
+    15: "Chapter 15 covers animal and vegetable fats and oils. BCD on refined edible oils is among the highest (up to 45%) to protect domestic refining.",
+    16: "Chapter 16 covers meat and fish preparations. BCD typically 30%; shelf-stable products attract FSSAI approval.",
+    17: "Chapter 17 covers sugars and sugar confectionery. BCD typically 30%-60%; white sugar has import management measures.",
+    18: "Chapter 18 covers cocoa and chocolate. BCD 30% on finished chocolate, lower on cocoa inputs.",
+    19: "Chapter 19 covers cereal, flour and milk preparations. BCD typically 30% on finished food products.",
+    20: "Chapter 20 covers prepared vegetables, fruits and nuts. BCD typically 30%.",
+    21: "Chapter 21 covers miscellaneous edible preparations — instant coffee, yeast, ice cream. BCD typically 30%.",
+    22: "Chapter 22 covers beverages, spirits and vinegar. BCD on alcoholic beverages is among the highest in any tariff schedule in the world — 100% on beer, 150% on wine and spirits. No IGST applies (state excise instead).",
+    23: "Chapter 23 covers residues and animal feed. BCD typically 30% on finished feed, lower on industrial residues.",
+    24: "Chapter 24 covers tobacco products. BCD 30%, plus high IGST (28%) and specific per-stick cess on cigarettes.",
+    25: "Chapter 25 covers salt, sulphur, earths, stones and cement. BCD typically 5%.",
+    26: "Chapter 26 covers ores, slag and ash. BCD 2.5%-5%; India exports many of these rather than imports.",
+    27: "Chapter 27 covers mineral fuels, oils and distillation products. Crude petroleum attracts specific-duty structures outside the normal stack; petroleum products are outside GST.",
+    28: "Chapter 28 covers inorganic chemicals. BCD typically 7.5%.",
+    29: "Chapter 29 covers organic chemicals. BCD typically 7.5%; active pharmaceutical ingredients get concessional rates under pharma notifications.",
+    30: "Chapter 30 covers pharmaceutical products. BCD 10% on finished formulations; specific life-saving drugs get nil BCD under notification.",
+    31: "Chapter 31 covers fertilizers. BCD typically 5%-7.5%; potash and urea import is often under state-trading regime.",
+    32: "Chapter 32 covers tanning and dyeing extracts, pigments, paints. BCD typically 10%.",
+    33: "Chapter 33 covers essential oils, perfumes, cosmetics. BCD 20%; IGST 18%-28%; CDSCO registration required for cosmetics.",
+    34: "Chapter 34 covers soap, washing preparations, candles, waxes. BCD typically 10%.",
+    35: "Chapter 35 covers albuminoidal substances, glues and enzymes. BCD typically 10%.",
+    36: "Chapter 36 covers explosives and matches. BCD typically 10%; import licences required for explosives.",
+    37: "Chapter 37 covers photographic and cinematographic goods. BCD typically 10%.",
+    38: "Chapter 38 covers miscellaneous chemical products — lubricants, additives, pesticides. BCD typically 7.5%.",
+    39: "Chapter 39 covers plastics and articles thereof. BCD typically 10% on resins, higher on finished products.",
+    40: "Chapter 40 covers rubber and articles. Natural rubber attracts specific duty; finished rubber products typically 10% BCD.",
+    41: "Chapter 41 covers hides and skins (other than fur). BCD typically 10% on raw, higher on finished leather.",
+    42: "Chapter 42 covers articles of leather — handbags, wallets, luggage. BCD 20% on finished goods.",
+    43: "Chapter 43 covers furskins and artificial fur. BCD typically 10%-20%.",
+    44: "Chapter 44 covers wood and articles of wood. BCD typically 10%; teak and specific hardwoods have CITES-regulated origin rules.",
+    45: "Chapter 45 covers cork and articles thereof. BCD typically 25%.",
+    46: "Chapter 46 covers basketware and wickerwork. BCD typically 25%.",
+    47: "Chapter 47 covers pulp of wood and cellulosic fibrous material. BCD typically 5% (industry input).",
+    48: "Chapter 48 covers paper and paperboard. Newsprint attracts concessional 5% BCD; other paper 10%.",
+    49: "Chapter 49 covers printed books, newspapers and pictures. Printed books are nil-rated for both BCD and IGST to keep education materials affordable.",
+    50: "Chapter 50 covers silk. BCD typically 10% on raw silk; higher on finished silk fabrics.",
+    51: "Chapter 51 covers wool, fine or coarse animal hair, horsehair. BCD typically 10%.",
+    52: "Chapter 52 covers cotton and cotton fabrics. BCD typically 10%; cotton is strategically protected.",
+    53: "Chapter 53 covers other vegetable textile fibres — jute, flax, hemp. BCD typically 10%.",
+    54: "Chapter 54 covers man-made filaments — polyester, nylon, viscose. BCD typically 10% on fibre, higher on finished fabric.",
+    55: "Chapter 55 covers man-made staple fibres. BCD typically 10%.",
+    56: "Chapter 56 covers wadding, felt, nonwovens, cordage. BCD typically 10%.",
+    57: "Chapter 57 covers carpets and floor coverings. BCD 20%.",
+    58: "Chapter 58 covers special woven fabrics, lace, embroidery. BCD typically 10%.",
+    59: "Chapter 59 covers impregnated, coated or laminated textiles. BCD typically 10%.",
+    60: "Chapter 60 covers knitted or crocheted fabrics. BCD typically 10%.",
+    61: "Chapter 61 covers apparel, knitted or crocheted. BCD 20% to protect domestic garment manufacturing; FTA origins (SAARC, ASEAN, UK) have preferential rates.",
+    62: "Chapter 62 covers apparel, not knitted or crocheted. BCD 20% same as Chapter 61.",
+    63: "Chapter 63 covers other made-up textile articles — bed linen, curtains, rags. BCD 20%.",
+    64: "Chapter 64 covers footwear. BCD 35% — high to protect the Indian footwear industry (Agra, Kanpur clusters).",
+    65: "Chapter 65 covers headgear. BCD 20%.",
+    66: "Chapter 66 covers umbrellas, walking sticks, whips. BCD 20%.",
+    67: "Chapter 67 covers prepared feathers, artificial flowers. BCD 20%.",
+    68: "Chapter 68 covers articles of stone, plaster, cement. BCD 10%.",
+    69: "Chapter 69 covers ceramic products. BCD 10%.",
+    70: "Chapter 70 covers glass and glassware. BCD 10%.",
+    71: "Chapter 71 covers pearls, precious stones, precious metals. Gold and silver have specific concessional rates (15% on gold, 10% on silver bars) that are politically sensitive and change frequently.",
+    72: "Chapter 72 covers iron and steel. BCD typically 7.5%; many specific steel grades have anti-dumping duties on imports from China, Korea, Vietnam.",
+    73: "Chapter 73 covers articles of iron and steel. BCD typically 10%.",
+    74: "Chapter 74 covers copper and articles. BCD typically 7.5% on raw, 10% on finished.",
+    75: "Chapter 75 covers nickel and articles. BCD typically 5%.",
+    76: "Chapter 76 covers aluminium and articles. BCD typically 7.5% on primary, 10% on finished.",
+    78: "Chapter 78 covers lead and articles. BCD typically 5%.",
+    79: "Chapter 79 covers zinc and articles. BCD typically 5%.",
+    80: "Chapter 80 covers tin and articles. BCD typically 5%.",
+    81: "Chapter 81 covers other base metals, cermets. BCD typically 5%.",
+    82: "Chapter 82 covers tools, implements, cutlery. BCD 10%.",
+    83: "Chapter 83 covers miscellaneous articles of base metal. BCD 10%.",
+    84: "Chapter 84 covers nuclear reactors, boilers, machinery and mechanical appliances. Most industrial machinery is at 7.5% BCD; specific items under project-import notifications get lower rates. Consumer appliances (fridges, washing machines) are at 20%.",
+    85: "Chapter 85 covers electrical machinery and equipment. Consumer electronics (smartphones, routers) are at 20% BCD; ITA-1 goods (laptops, components) are at 0%; displays, Li-ion batteries and solar equipment have specific rates.",
+    86: "Chapter 86 covers railway and tramway equipment. BCD 10%-25% depending on item.",
+    87: "Chapter 87 covers vehicles other than railway. CBU cars attract 70% BCD + 22% cess + 28% IGST — one of the highest auto tariffs globally. SKD/CKD units get lower BCD.",
+    88: "Chapter 88 covers aircraft and spacecraft. BCD typically 2.5% — kept low because India imports most commercial aviation.",
+    89: "Chapter 89 covers ships, boats and floating structures. BCD typically 5%.",
+    90: "Chapter 90 covers optical, photographic, measuring and medical instruments. BCD 10%; medical devices often have end-use concessions.",
+    91: "Chapter 91 covers clocks and watches. BCD 20%.",
+    92: "Chapter 92 covers musical instruments. BCD 10%.",
+    93: "Chapter 93 covers arms and ammunition. BCD 10% but imports require home-ministry licence.",
+    94: "Chapter 94 covers furniture, bedding, lamps. BCD 25% on finished furniture.",
+    95: "Chapter 95 covers toys, games and sports requisites. BCD 70% on toys since 2023 (protective tariff); game consoles at 20%.",
+    96: "Chapter 96 covers miscellaneous manufactured articles — pens, lighters, brushes. BCD 20%.",
+    97: "Chapter 97 covers works of art, collectors' pieces and antiques. BCD 10%; antiques over 100 years old are exempt.",
+  };
+  return map[chapterNum] || `Chapter ${pad2(chapterNum)} of India's Customs Tariff Act Schedule I.`;
+}
+
 function verificationBlock(code) {
   // Support both the old flat schema and the new per-field schema.
   const v = code.verification || {};
@@ -76,9 +183,10 @@ function searchBarHtml({ placeholder = "Search HSN code or product (e.g. 8517, s
 }
 
 function layout({ title, description, canonical, bodyHtml, jsonLd, includeSearch = true, extraHeadHtml = "" }) {
-  const ld = jsonLd
-    ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`
-    : "";
+  const ldArr = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [];
+  const ld = ldArr
+    .map((l) => `<script type="application/ld+json">${JSON.stringify(l)}</script>`)
+    .join("\n");
   return `<!doctype html>
 <html lang="en-IN">
 <head>
@@ -87,11 +195,19 @@ function layout({ title, description, canonical, bodyHtml, jsonLd, includeSearch
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${esc(canonical)}">
+<link rel="alternate" hreflang="en-IN" href="${esc(canonical)}">
+<link rel="alternate" hreflang="en" href="${esc(canonical)}">
+<link rel="alternate" hreflang="x-default" href="${esc(canonical)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${esc(canonical)}">
 <meta property="og:type" content="website">
-<meta name="robots" content="index,follow">
+<meta property="og:site_name" content="${esc(SITE.name)}">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="${esc(title)}">
+<meta name="twitter:description" content="${esc(description)}">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large">
 <meta name="theme-color" content="#2563eb">
 <link rel="preconnect" href="https://rsms.me/" crossorigin>
 <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
@@ -115,7 +231,7 @@ ${extraHeadHtml}
 </header>
 <main>${bodyHtml}</main>
 <footer class="site-footer">
-  <p>© ${SITE.copyrightYear} ${SITE.name} · Informational use only</p>
+  <p>© ${SITE.copyrightYear} ${SITE.name} · Informational use only · <a href="/about/">About</a> · <a href="/contact/">Contact</a> · <a href="/privacy/">Privacy</a></p>
   <p>${esc(DISCLAIMER)}</p>
 </footer>
 ${includeSearch ? '<script src="/assets/search.js" defer></script>' : ""}
@@ -132,7 +248,7 @@ export function hsnPage(code, parent6, productSlug = null) {
   const description = `${code.description}. HSN ${code.hsn}: BCD ${code.bcd}%, IGST ${code.igst}%, SWS ${code.sws}% of BCD${code.cess ? `, Cess ${code.cess}%` : ""}. Landed cost on ₹1,00,000 = ${inr(example.landed)}.`;
   const canonical = `${SITE.origin}${hsnUrl(code.hsn)}`;
 
-  const jsonLd = {
+  const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
@@ -155,6 +271,19 @@ export function hsnPage(code, parent6, productSlug = null) {
     ],
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin + "/" },
+      { "@type": "ListItem", position: 2, name: `Chapter ${ch}`, item: `${SITE.origin}${chapterUrl(ch)}` },
+      { "@type": "ListItem", position: 3, name: `Heading ${heading4}`, item: `${SITE.origin}${headingUrl(heading4)}` },
+      { "@type": "ListItem", position: 4, name: `HSN ${code.hsn}`, item: canonical },
+    ],
+  };
+
+  const jsonLd = [faqJsonLd, breadcrumbJsonLd];
+
   const productsHtml = (code.common_products ?? [])
     .map((p) => `<li>${esc(p)}</li>`)
     .join("");
@@ -171,6 +300,28 @@ export function hsnPage(code, parent6, productSlug = null) {
   ${code.cess ? `<div class="rate-card"><div class="rate-card-label">Cess</div><div class="rate-card-val">${code.cess}%</div><div class="rate-card-sub">Comp. Cess</div></div>` : ""}
   <div class="rate-card" style="background:var(--brand-soft); border-color:var(--brand);"><div class="rate-card-label" style="color:var(--brand-dark)">Effective</div><div class="rate-card-val" style="color:var(--brand-dark)">${example.effectiveRate}%</div><div class="rate-card-sub">All-in duty rate</div></div>
 </div>`;
+
+  // Landed-cost tiers at 5 realistic CIF values. Gives users a quick
+  // read on what duty looks like at different import sizes without
+  // forcing them into the calculator. Also bulks up the page with
+  // genuinely useful numeric content.
+  const tiers = [10000, 50000, 100000, 500000, 1000000];
+  const tiersTableRows = tiers
+    .map((cif) => {
+      const ex = computeDuty(cif, code);
+      return `<tr><td class="num">${inr(cif)}</td><td class="num">${inr(ex.totalDuty)}</td><td class="num">${inr(ex.landed)}</td><td class="num">${ex.effectiveRate}%</td></tr>`;
+    })
+    .join("");
+  const tiersTable = `
+<div class="table-wrap">
+  <h2>Landed cost at common CIF values</h2>
+  <table class="listing">
+    <thead><tr><th>CIF value</th><th>Total duty</th><th>Landed cost</th><th>Effective rate</th></tr></thead>
+    <tbody>${tiersTableRows}</tbody>
+  </table>
+</div>`;
+
+  const chapterContext = chapterContextBlurb(code.chapter);
 
   const body = `
 <article class="hsn">
@@ -200,14 +351,18 @@ export function hsnPage(code, parent6, productSlug = null) {
     </table>
   </section>
 
+  ${tiersTable}
+
   ${productsHtml ? `<section class="products"><h2>Common products</h2><ul>${productsHtml}</ul></section>` : ""}
 
   <section>
     <h2>About HSN ${esc(code.hsn)}</h2>
-    <p>HSN (Harmonised System of Nomenclature) code ${esc(code.hsn)} falls under Chapter ${ch} of India's Customs Tariff Act. The first six digits (${esc(code.hsn.slice(0, 6))}) follow the World Customs Organization's global HS 2022 classification; the last two digits are India's national extension.</p>
-    <p>For import, declare this 8-digit code on the Bill of Entry in ICEGATE. For GST-registered taxpayers with turnover above ₹5 crore, the 8-digit HSN is also mandatory on B2B invoices.</p>
+    <p>HSN (Harmonised System of Nomenclature) code ${esc(code.hsn)} falls under Chapter ${ch} of India's Customs Tariff Act. The first six digits (${esc(code.hsn.slice(0, 6))}) follow the World Customs Organization's global HS 2022 classification; the last two digits are India's national extension under the ITC(HS) 2022 schedule published by DGFT.</p>
+    <p>For import, declare this 8-digit code on the Bill of Entry in ICEGATE. For GST-registered taxpayers with turnover above ₹5 crore, the 8-digit HSN is also mandatory on B2B invoices under Notification 78/2020-Central Tax.</p>
+    <p><strong>Chapter ${ch} context:</strong> ${esc(chapterContext)}</p>
     <p>Not sure how the four duty components stack on top of each other? Read <a href="/guide/customs-duty/">India customs duty, explained — with two worked examples</a>.</p>
     ${productSlug ? `<p>Importing this specifically as an individual? See the product-focused walkthrough: <a href="/duty/${productSlug}/">Customs duty on ${esc(productSlug.replace(/-india$/, "").replace(/-/g, " "))} in India</a>.</p>` : ""}
+    <p>To run your own scenario: plug HSN <strong>${esc(code.hsn)}</strong> and any CIF value into the <a href="/calculator/?hsn=${esc(code.hsn)}">duty calculator</a> — it pre-fills the BCD, SWS, IGST and cess for this code.</p>
   </section>
 
   <section class="verification">
@@ -227,6 +382,17 @@ export function subheadingPage(entry, parent4, chapterDesc, sectionName, india8s
   const title = `HS ${entry.code} — ${desc} — HSN India`;
   const description = `HS subheading ${entry.code}: ${desc}. India uses 8-digit HSN codes extending this subheading. Chapter ${ch} of the Customs Tariff.`;
   const canonical = `${SITE.origin}${subheadingUrl(entry.code)}`;
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin + "/" },
+      { "@type": "ListItem", position: 2, name: `Chapter ${ch}`, item: `${SITE.origin}${chapterUrl(ch)}` },
+      { "@type": "ListItem", position: 3, name: `Heading ${h4}`, item: `${SITE.origin}${headingUrl(h4)}` },
+      { "@type": "ListItem", position: 4, name: `Subheading ${entry.code}`, item: canonical },
+    ],
+  };
 
   const rows8 = india8s
     .map(
@@ -258,7 +424,7 @@ export function subheadingPage(entry, parent4, chapterDesc, sectionName, india8s
     <p>The first 6 digits (${esc(entry.code)}) are the global WCO Harmonized System 2022 subheading. India extends this to 8 digits for tariff classification.</p>
   </section>
 </article>`;
-  return layout({ title, description, canonical, bodyHtml: body });
+  return layout({ title, description, canonical, bodyHtml: body, jsonLd: breadcrumbJsonLd });
 }
 
 // ————— 4-digit heading page —————
@@ -268,6 +434,16 @@ export function headingPage(entry, children6, chapterDesc, sectionName) {
   const title = `HS Heading ${entry.code} — ${desc} — HSN India`;
   const description = `HS heading ${entry.code}: ${desc}. ${children6.length} subheadings under Chapter ${ch} of India's Customs Tariff.`;
   const canonical = `${SITE.origin}${headingUrl(entry.code)}`;
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin + "/" },
+      { "@type": "ListItem", position: 2, name: `Chapter ${ch}`, item: `${SITE.origin}${chapterUrl(ch)}` },
+      { "@type": "ListItem", position: 3, name: `Heading ${entry.code}`, item: canonical },
+    ],
+  };
 
   const rows = children6
     .map(
@@ -295,7 +471,7 @@ export function headingPage(entry, children6, chapterDesc, sectionName) {
     <p>Chapter <a href="${chapterUrl(ch)}">${ch}</a>${chapterDesc ? ` — ${esc(tidy(chapterDesc))}` : ""}. Section <a href="${sectionUrl(entry.section)}">${entry.section}</a> — ${esc(sectionName ?? "")}.</p>
   </section>
 </article>`;
-  return layout({ title, description, canonical, bodyHtml: body });
+  return layout({ title, description, canonical, bodyHtml: body, jsonLd: breadcrumbJsonLd });
 }
 
 // ————— Chapter page —————
@@ -305,6 +481,16 @@ export function chapterPage(chapterEntry, children4, sectionName, eightDigitInCh
   const title = `Chapter ${ch} — ${desc} — HSN Codes India`;
   const description = `All HS headings under Chapter ${ch} of India's Customs Tariff — ${desc}. With links to 6-digit subheadings and 8-digit HSN codes.`;
   const canonical = `${SITE.origin}${chapterUrl(ch)}`;
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin + "/" },
+      { "@type": "ListItem", position: 2, name: "Chapters", item: SITE.origin + "/chapters/" },
+      { "@type": "ListItem", position: 3, name: `Chapter ${ch}`, item: canonical },
+    ],
+  };
 
   const rows = children4
     .map(
@@ -346,7 +532,7 @@ export function chapterPage(chapterEntry, children4, sectionName, eightDigitInCh
     <p>Chapter ${ch} is part of <a href="${sectionUrl(chapterEntry.section)}">Section ${chapterEntry.section}</a> — ${esc(sectionName ?? "")}.</p>
   </section>
 </article>`;
-  return layout({ title, description, canonical, bodyHtml: body });
+  return layout({ title, description, canonical, bodyHtml: body, jsonLd: breadcrumbJsonLd });
 }
 
 // ————— Section page —————
@@ -384,6 +570,37 @@ export function homePage(india8s, chapters, sections, stats) {
   const description = SITE.description;
   const canonical = SITE.origin + "/";
 
+  const homeJsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: SITE.name,
+      url: SITE.origin + "/",
+      description,
+      inLanguage: "en-IN",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE.origin}/?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.origin + "/",
+      description:
+        "Free Indian customs duty and HSN code reference. BCD, IGST, SWS, cess and worked landed-cost examples for Indian imports.",
+      areaServed: "IN",
+    },
+  ];
+  const homeJsonLdScript = homeJsonLd
+    .map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`)
+    .join("\n");
+
   const popular = india8s
     .slice(0, 12)
     .map(
@@ -402,7 +619,7 @@ export function homePage(india8s, chapters, sections, stats) {
   const body = `
 <section class="hero">
   <span class="eyebrow">Indian Customs Tariff · HS 2022</span>
-  <h1>Find any HSN code. See the real duty.</h1>
+  <h1>Find any HSN code. See the real duty on any Indian import.</h1>
   <p class="lead">BCD, IGST, SWS and cess for Indian imports — plus a worked landed-cost calculator on ₹1,00,000, for every 8-digit code.</p>
   ${searchBarHtml({ autofocus: false })}
   <div class="stats">
@@ -453,7 +670,7 @@ export function homePage(india8s, chapters, sections, stats) {
   <p style="margin-top:14px;"><a href="/chapters/">See all ${stats.chapters} chapters →</a></p>
 </section>`;
 
-  return layout({ title, description, canonical, bodyHtml: body });
+  return layout({ title, description, canonical, bodyHtml: body, extraHeadHtml: homeJsonLdScript });
 }
 
 // ————— Calculator —————
@@ -976,6 +1193,94 @@ Landed cost = AV + Total duty</code></pre>
   });
 }
 
+// ————— Privacy Policy —————
+export function privacyPage() {
+  const title = `Privacy Policy — ${SITE.name}`;
+  const description = `Privacy policy for ${SITE.name}: what data we collect, how Google AdSense and analytics cookies work on this site, and how to opt out.`;
+  const canonical = SITE.origin + "/privacy/";
+  const body = `
+<article>
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><span>Privacy</span></nav>
+  <h1>Privacy Policy</h1>
+  <p class="lead">Last updated: 24 April 2026.</p>
+
+  <section>
+    <h2>What ${SITE.name} does</h2>
+    <p>${SITE.name} is a free reference site for Indian HSN codes and customs duty. It does not require you to create an account, log in, or submit any personal information to use the HSN lookup, the duty calculator, or any page on the site. We don't sell user data and we don't run a mailing list off this domain.</p>
+  </section>
+
+  <section>
+    <h2>Cookies on this site</h2>
+    <p>The site does not set first-party tracking cookies. Third-party scripts served by this site may set their own cookies:</p>
+    <ul>
+      <li><strong>Google AdSense</strong> — if and when AdSense is approved on this site, Google will serve ads. Google uses cookies to serve ads based on a user's prior visits to this website and other websites on the internet. You can opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" rel="nofollow noopener">Google Ads Settings</a>. See <a href="https://policies.google.com/technologies/ads" rel="nofollow noopener">How Google uses information from sites or apps that use our services</a>.</li>
+      <li><strong>Third-party vendors and ad networks</strong> that are AdSense partners may also set cookies. Users may opt out of cookie use by some third-party vendors at <a href="https://www.aboutads.info/" rel="nofollow noopener">aboutads.info</a>.</li>
+      <li><strong>Google Search Console / Bing Webmaster Tools</strong> — these are webmaster-facing services and do not set cookies on visitor browsers; they observe aggregate crawl and search-impression data server-side.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What we log</h2>
+    <p>The site is served through Cloudflare. Cloudflare logs HTTP requests (IP address, user-agent, URL, timestamp) for rate-limiting, caching and abuse prevention. These logs are not read or retained by us beyond what Cloudflare retains by default under their standard policies.</p>
+  </section>
+
+  <section>
+    <h2>Children</h2>
+    <p>This site is not directed at children under 13. We do not knowingly collect personal information from children.</p>
+  </section>
+
+  <section>
+    <h2>Changes to this policy</h2>
+    <p>If this policy is updated, the "Last updated" date at the top of the page will reflect the change. Material changes will also be noted in the site's change log.</p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p>Questions or concerns about this policy can be sent through the <a href="/contact/">contact page</a>.</p>
+  </section>
+</article>`;
+  return layout({ title, description, canonical, bodyHtml: body });
+}
+
+// ————— Contact —————
+export function contactPage() {
+  const title = `Contact — ${SITE.name}`;
+  const description = `How to reach ${SITE.name} — corrections, feedback, partnership enquiries, data-licensing questions.`;
+  const canonical = SITE.origin + "/contact/";
+  const body = `
+<article>
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><span>Contact</span></nav>
+  <h1>Contact</h1>
+  <p class="lead">Rate correction, data-licensing enquiry, or press question? Drop a note via any of the channels below.</p>
+
+  <section>
+    <h2>Rate corrections</h2>
+    <p>If a rate on this site doesn't match the current CBIC notification for your HSN, we want to know. Include the HSN code, the rate you're seeing on our page, the correct rate, and a link to the notification that establishes it. We re-verify every reported correction against CBIC sources before pushing the fix.</p>
+  </section>
+
+  <section>
+    <h2>Email</h2>
+    <p>General enquiries: <a href="mailto:hello@hsnlookup.in">hello@hsnlookup.in</a>. We read everything, reply to most within a few working days.</p>
+  </section>
+
+  <section>
+    <h2>Data licensing</h2>
+    <p>If you're building a tool and want a structured feed of HSN + IGST + BCD data, we can discuss a licensed bulk export. Indicate your use case in the first message.</p>
+  </section>
+
+  <section>
+    <h2>Press and partnerships</h2>
+    <p>Happy to contribute or be quoted on Indian customs, HSN classification, or tariff structure. Same inbox.</p>
+  </section>
+
+  <section>
+    <h2>What we can't help with</h2>
+    <p>We aren't a customs broker and can't file Bills of Entry or advise on specific shipments. For that, please engage a licensed Customs House Agent (CHA).</p>
+  </section>
+</article>`;
+  return layout({ title, description, canonical, bodyHtml: body });
+}
+
 // ————— About —————
 export function aboutPage() {
   const title = `About ${SITE.name}`;
@@ -1061,10 +1366,11 @@ export function sectionsIndexPage(sections) {
 }
 
 export function sitemapXml(urls) {
+  const today = new Date().toISOString().slice(0, 10);
   const items = urls
     .map(
       (u) =>
-        `<url><loc>${SITE.origin}${u}</loc><changefreq>weekly</changefreq></url>`,
+        `<url><loc>${SITE.origin}${u}</loc><lastmod>${today}</lastmod><changefreq>weekly</changefreq></url>`,
     )
     .join("");
   return `<?xml version="1.0" encoding="UTF-8"?>
