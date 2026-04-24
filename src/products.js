@@ -283,6 +283,40 @@ export const PRODUCTS = [
     ],
   },
   {
+    slug: "cement-india",
+    name: "cement",
+    h1: "Customs duty on imported cement in India",
+    hsn: "25232910",
+    hsnDescription: "Ordinary portland cement, dry",
+    typicalCifInr: 500000,
+    typicalScenario: "a bulk cement shipment (~50 tonnes) imported for a construction project",
+    personaHooks: [
+      "Builders importing premium cement for specialised construction",
+      "Traders arbitraging cross-border cement price gaps (common on Sri Lanka / Bangladesh routes)",
+      "Project-based EPC contractors when domestic supply is constrained",
+    ],
+    keyInsight:
+      "Cement imports attract 5% BCD + 10% SWS on BCD + 28% IGST — effective ~34.9% on assessable value. On a ₹5 lakh CIF shipment, landed cost is around ₹6.75 lakh before inland freight and handling. The 28% IGST slab is because cement falls in GST's highest 'demerit goods' bucket alongside tobacco and luxury cars — a long-running policy anomaly importers complain about.",
+    faqs: [
+      {
+        q: "What's the HSN code for cement?",
+        a: "The main 4-digit heading is HSN 2523. Specific 8-digit codes: 25231000 (Portland blends), 25232100 (white cement), 25232910 (ordinary Portland, dry), 25232920 (coloured Portland), 25232930 (Portland pozzolana / PPC), 25232940 (Portland slag), 25233000 (aluminous), 25239020 (high-alumina refractory). Each has the same 5% BCD + 28% IGST duty structure; choose the 8-digit that matches your product's formulation.",
+      },
+      {
+        q: "Can GST-registered buyers claim IGST as input credit on cement imports?",
+        a: "Yes. IGST on imports of inputs used for taxable supplies is creditable. The economic cost to a registered contractor drops from the 34.9% sticker rate to roughly 5%-6% of AV — BCD + SWS only. This is why institutional buyers import cement at scale despite the high headline IGST.",
+      },
+      {
+        q: "Are there anti-dumping duties on cement from specific countries?",
+        a: "As of April 2026 there is no in-force anti-dumping duty on ordinary Portland cement. DGTR has periodically investigated Pakistani and Sri Lankan cement but has not levied ADD. Always check the current DGTR notifications for your specific origin before finalising a landed-cost estimate.",
+      },
+      {
+        q: "Does cement import require BIS certification?",
+        a: "Yes. Portland cement is under the Compulsory Registration Scheme (CRS) — imports require a BIS licence (IS 269 for OPC, IS 1489 for PPC, IS 455 for PSC etc). Non-compliant shipments are refused clearance regardless of duty paid. The licensing process takes months and must be in place before the shipment arrives.",
+      },
+    ],
+  },
+  {
     slug: "refrigerator-india",
     name: "refrigerator",
     h1: "Customs duty on imported refrigerators in India",

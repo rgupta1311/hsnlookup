@@ -11,6 +11,8 @@ import {
   aboutPage,
   calculatorPage,
   customsDutyGuidePage,
+  whatIsHsnGuidePage,
+  hsnCodeListPage,
   productDutyPage,
   dutyIndexPage,
   privacyPage,
@@ -84,6 +86,8 @@ write("privacy/index.html", privacyPage());
 write("contact/index.html", contactPage());
 write("calculator/index.html", calculatorPage());
 write("guide/customs-duty/index.html", customsDutyGuidePage());
+write("guide/what-is-hsn-code/index.html", whatIsHsnGuidePage());
+write("hsn-code-list/index.html", hsnCodeListPage(hs.chapters, india8));
 
 const india8ByHsn = new Map(india8.map((c) => [c.hsn, c]));
 write("duty/index.html", dutyIndexPage(PRODUCTS, india8ByHsn));
@@ -151,6 +155,8 @@ const urls = [
   "/contact/",
   "/calculator/",
   "/guide/customs-duty/",
+  "/guide/what-is-hsn-code/",
+  "/hsn-code-list/",
   "/duty/",
   ...PRODUCTS.map((p) => `/duty/${p.slug}/`),
   "/chapters/",
@@ -182,6 +188,31 @@ for (const c of india8) {
   };
 }
 writeFileSync(join(outDir, "assets/rates.json"), JSON.stringify(ratesMap));
+
+// Public JSON API — one bulk file for the full 8-digit dataset. Keeps
+// us under Cloudflare free-tier's 20,000-file asset limit. Per-code
+// lookups can be added later via a Worker that reads from this bulk
+// file once we're above rent and can afford CF Workers Paid.
+mkdirSync(join(outDir, "api"), { recursive: true });
+writeFileSync(join(outDir, "api/hsn.json"), JSON.stringify({
+  generatedAt: new Date().toISOString(),
+  count: india8.length,
+  license: "CC-BY-4.0 — attribute hsnlookup.in with a visible link",
+  source: "hsnlookup.in",
+  schema: {
+    hsn: "string — India ITC(HS) 8-digit tariff item",
+    description: "string",
+    chapter: "number — 1..97",
+    bcd: "number — Basic Customs Duty percent",
+    sws: "number — Social Welfare Surcharge percent of BCD",
+    igst: "number — Integrated GST percent",
+    cess: "number — Compensation Cess percent",
+  },
+  data: india8.map((c) => ({
+    hsn: c.hsn, description: c.description, chapter: c.chapter,
+    bcd: c.bcd, sws: c.sws, igst: c.igst, cess: c.cess || 0,
+  })),
+}));
 
 // IndexNow key file — lets Bing/Yandex index the site fast after push.
 const INDEXNOW_KEY = "a0fd0c7dfc4b04b561fe074f305f7dcb";

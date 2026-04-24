@@ -669,6 +669,7 @@ export function homePage(india8s, chapters, sections, stats) {
     <li><a href="/duty/coffee-india/"><strong>Coffee (green)</strong> <span>HSN 0901.11.11 — ~115% effective</span></a></li>
     <li><a href="/duty/camera-india/"><strong>Camera</strong> <span>HSN 9006.10.00 — 30.98% effective</span></a></li>
     <li><a href="/duty/cosmetics-india/"><strong>Cosmetics / skincare</strong> <span>HSN 3304.99.90 — 56.25% effective</span></a></li>
+    <li><a href="/duty/cement-india/"><strong>Cement</strong> <span>HSN 2523.29.10 — ~34.9% effective</span></a></li>
   </ul>
   <p><a href="/duty/">See all product-duty pages →</a></p>
 </section>
@@ -916,6 +917,218 @@ export function dutyIndexPage(products, byHsn) {
     </table>
   </div>
   <p>Don't see what you're importing? Use the <a href="/">search bar</a> to find the HSN, or plug your rates into the <a href="/calculator/">calculator</a>.</p>
+</article>`;
+  return layout({ title, description, canonical, bodyHtml: body });
+}
+
+// ————— "What is HSN code" guide: /guide/what-is-hsn-code/ —————
+export function whatIsHsnGuidePage() {
+  const title = `What is an HSN code? — Plain-English Explanation for India (2026)`;
+  const description = `What is an HSN code, why does India use 8-digit HSN instead of the global 6-digit, who needs to quote HSN on GST invoices, and how to find the right HSN for any product.`;
+  const canonical = SITE.origin + "/guide/what-is-hsn-code/";
+
+  const faqs = [
+    {
+      q: "What does HSN stand for?",
+      a: "HSN is short for Harmonized System of Nomenclature — a globally standardized product-classification system maintained by the World Customs Organization (WCO). Every traded good on earth has an HSN code. India adopted HSN for GST in 2017 and for customs much earlier.",
+    },
+    {
+      q: "Why does India use an 8-digit HSN while the global standard is 6?",
+      a: "The first 6 digits of any HSN are the WCO's global Harmonized System. Countries can add their own national extensions beyond that. India extends to 8 digits under the ITC(HS) schedule published by DGFT, because an 8-digit granularity gives the Indian Customs and GST regimes room to set different rates for closely related products (e.g., different sub-types of cotton fabric or stainless-steel grades).",
+    },
+    {
+      q: "Who needs to quote HSN on GST invoices?",
+      a: "Per Notification 78/2020-Central Tax: businesses with aggregate turnover up to ₹5 crore must quote a 4-digit HSN on B2B invoices and may skip HSN on B2C. Businesses above ₹5 crore must quote 6-digit HSN on B2B and 4-digit on B2C. For customs import documents (Bill of Entry), the full 8-digit ITC(HS) code is always required regardless of turnover.",
+    },
+    {
+      q: "HSN, SAC, ITC(HS) — what's the difference?",
+      a: "HSN codes apply to goods. SAC (Services Accounting Code) applies to services — a separate 6-digit code starting with '99' (e.g., 9965 for transport services). ITC(HS) is the specific name of India's 8-digit extension of HSN published by the Directorate General of Foreign Trade. In practice 'HSN code' and 'ITC(HS) code' are used interchangeably in India.",
+    },
+    {
+      q: "How do I find the right HSN code for my product?",
+      a: "Start with the chapter — the first 2 digits correspond to a broad category (e.g., 84 for machinery, 85 for electrical). Drill down to a 4-digit heading, then 6-digit subheading, then 8-digit tariff item. Use the WCO's General Rules of Interpretation (GRI 1–6) to resolve ambiguous cases. For contentious classifications, file a CAAR (Customs Authority for Advance Rulings) application before your first consignment — the ruling is binding for three years.",
+    },
+    {
+      q: "Does the HSN code affect the GST rate I pay?",
+      a: "Yes. GST rates are assigned at the HSN level — 0%, 5%, 12%, 18% or 28%. Two similar-looking products with different HSNs can land in different slabs (e.g., branded packaged food vs. unbranded). Getting the HSN wrong can therefore mean underpaying or overpaying GST, and both come with penalties.",
+    },
+  ];
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: "What is an HSN code? Plain-English explanation for India",
+    description,
+    author: { "@type": "Organization", name: SITE.name },
+    publisher: { "@type": "Organization", name: SITE.name },
+    datePublished: "2026-04-24",
+    dateModified: "2026-04-24",
+    mainEntityOfPage: canonical,
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin + "/" },
+      { "@type": "ListItem", position: 2, name: "Guides", item: SITE.origin + "/guide/" },
+      { "@type": "ListItem", position: 3, name: "What is HSN code", item: canonical },
+    ],
+  };
+
+  const faqHtml = faqs
+    .map((f) => `<div class="faq-item"><h3>${esc(f.q)}</h3><p>${esc(f.a)}</p></div>`)
+    .join("");
+
+  const body = `
+<article class="guide">
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><span>Guide</span><span class="sep">›</span><span>What is HSN code</span></nav>
+  <header class="guide-header">
+    <span class="eyebrow">Guide · Updated April 2026</span>
+    <h1>What is an HSN code?</h1>
+    <p class="lead">Plain-English answer — what HSN means, why India uses 8 digits instead of 6, who has to quote it on invoices, and how to find the right one. No jargon, no acronym soup.</p>
+  </header>
+
+  <aside class="tldr">
+    <strong>TL;DR.</strong> HSN (Harmonized System of Nomenclature) is a 6-digit globally-standardized product code managed by the World Customs Organization. India extends every HSN to 8 digits under the ITC(HS) schedule published by DGFT. Every import and most GST invoices must quote the right HSN — and the HSN determines which of the 0%-28% GST slabs the product lands in. Use our <a href="/">HSN search</a> to look up any code.
+  </aside>
+
+  <section>
+    <h2>The 3-layer structure</h2>
+    <ol>
+      <li><strong>Chapter (2 digits)</strong> — 97 chapters organised by industry. Chapter 85 = electrical equipment, Chapter 61 = knitted apparel, Chapter 22 = beverages.</li>
+      <li><strong>Heading (4 digits)</strong> — narrower product group inside a chapter. 8517 = telephones including smartphones.</li>
+      <li><strong>Subheading (6 digits)</strong> — the global WCO level. 8517.13 = smartphones specifically.</li>
+      <li><strong>Tariff item (8 digits)</strong> — India's national extension. 8517.13.00 = the exact tariff line on which BCD, IGST and cess are levied.</li>
+    </ol>
+    <p>The first 6 digits are identical across every HSN-using country — so a smartphone shipped from Germany, China or the US all carry 851713 on the export paperwork. The last 2 digits are India-specific.</p>
+  </section>
+
+  <section>
+    <h2>Where HSN shows up for an Indian business</h2>
+    <ul>
+      <li><strong>GST invoices (B2B, B2C)</strong> — quote the HSN (4, 6 or 8 digits based on turnover) so the GST slab is unambiguous.</li>
+      <li><strong>GSTR-1, GSTR-3B returns</strong> — aggregate sales are reported HSN-wise.</li>
+      <li><strong>Customs Bill of Entry (import)</strong> — full 8-digit ITC(HS) on every line item; mis-declaration can mean confiscation.</li>
+      <li><strong>Shipping Bill (export)</strong> — same as imports, 8-digit required.</li>
+      <li><strong>MEIS / RoDTEP / drawback claims</strong> — scheme benefits are tied to HSN.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Turnover-based HSN requirement (Notification 78/2020-Central Tax)</h2>
+    <table>
+      <thead><tr><th>Aggregate turnover (preceding FY)</th><th>B2B invoice HSN</th><th>B2C invoice HSN</th></tr></thead>
+      <tbody>
+        <tr><td>Up to ₹5 crore</td><td class="num">4 digits</td><td class="num">Optional</td></tr>
+        <tr><td>Above ₹5 crore</td><td class="num">6 digits</td><td class="num">4 digits</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Import / export documents always require 8 digits, regardless of turnover.</p>
+  </section>
+
+  <section>
+    <h2>Finding the right HSN in practice</h2>
+    <p>For most products the simplest path is: (1) describe the product in plain words, (2) identify the chapter most likely to cover it, (3) read the chapter's heading structure to find the heading that names it, (4) pick the 6-digit subheading that matches, (5) pick the 8-digit ITC(HS) sub-line. Our <a href="/chapters/">chapter index</a> is designed for exactly this drill-down.</p>
+    <p>If two HSNs could plausibly apply, use the WCO's General Rules of Interpretation: specific beats general, essential character decides composite goods, "other" is the last resort. Borderline cases are exactly when a CAAR advance ruling becomes worth the paperwork — it removes the risk of reassessment three years down the line.</p>
+  </section>
+
+  <section>
+    <h2>HSN vs SAC</h2>
+    <p>HSN codes apply to goods. Services use a parallel classification called SAC — Services Accounting Code — that starts with '99'. Freight transport is 9965, legal services 9982, software/IT services 9983. Both HSN and SAC are 6-digit codes; GST rates apply to both but the tables are separate.</p>
+  </section>
+
+  <section>
+    <h2>Common classification mistakes</h2>
+    <ul>
+      <li><strong>Using the "other" sub-line as a default.</strong> Customs officers reclassify "other" entries to more-specific sub-lines with higher duty. Use "other" only after confirming no specific sub-line matches.</li>
+      <li><strong>Classifying composite products by a single component.</strong> A retail-packed kit of hardware + software + accessories classifies under the item that gives it essential character, not whichever component is most expensive.</li>
+      <li><strong>Ignoring chapter notes.</strong> Each chapter has notes that can exclude specific items from the default reading — e.g., Chapter 84 notes exclude certain electrical machines that go in Chapter 85.</li>
+      <li><strong>Mis-reading 6 vs 8 digits.</strong> If you're given 851713 on a foreign supplier's invoice, don't just file that as your Bill of Entry line — extend to 8 digits per India's ITC(HS).</li>
+    </ul>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    ${faqHtml}
+  </section>
+
+  <section class="guide-cta">
+    <h2>Look up an HSN code now</h2>
+    <p>Paste any 4, 6 or 8-digit code into the <a href="/">search bar on the homepage</a>, or browse by <a href="/chapters/">chapter</a>. Every code page shows the full duty stack and a landed-cost worked example.</p>
+  </section>
+</article>`;
+
+  const jsonLdScripts = [articleJsonLd, breadcrumbJsonLd, faqJsonLd]
+    .map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`)
+    .join("\n");
+  return layout({ title, description, canonical, bodyHtml: body, extraHeadHtml: jsonLdScripts });
+}
+
+// ————— HSN code list landing: /hsn-code-list/ —————
+export function hsnCodeListPage(chapters, india8s) {
+  const title = `HSN Code List India — All 97 Chapters & 12,000+ 8-digit Codes`;
+  const description = `Complete list of Indian HSN codes with GST + customs duty rates. All 97 chapters, 1,229 headings, 5,613 subheadings, 12,136 8-digit tariff items — one click to any code.`;
+  const canonical = SITE.origin + "/hsn-code-list/";
+
+  const chapterRows = chapters
+    .map((c) => `<tr><td><a href="${chapterUrl(c.code)}">${c.code}</a></td><td>${esc(tidy(c.description))}</td></tr>`)
+    .join("");
+
+  const body = `
+<article>
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><span>HSN code list</span></nav>
+  <h1>HSN code list — India</h1>
+  <p class="lead">Every HSN chapter of India's Customs Tariff Act, with drill-down links to 4-digit headings, 6-digit subheadings and 8-digit tariff items. Use the search bar below or click a chapter to browse.</p>
+
+  ${searchBarHtml({ placeholder: "Search for an HSN code or product — try 'smartphone' or '8517'" })}
+
+  <section>
+    <h2>What's on this page</h2>
+    <ul>
+      <li><strong>97 chapters</strong> covering every product category traded internationally (Chapter 1 = live animals, Chapter 97 = works of art).</li>
+      <li><strong>1,229 4-digit headings</strong> — drill into any chapter to see them.</li>
+      <li><strong>5,613 6-digit subheadings</strong> — the global WCO HS 2022 tree.</li>
+      <li><strong>12,136 India-specific 8-digit ITC(HS) tariff items</strong> with verified IGST rates + BCD estimates + a per-code worked landed-cost example.</li>
+    </ul>
+  </section>
+
+  <div class="table-wrap">
+    <h2>All 97 chapters</h2>
+    <table class="listing">
+      <thead><tr><th>Chapter</th><th>Description</th></tr></thead>
+      <tbody>${chapterRows}</tbody>
+    </table>
+  </div>
+
+  <section>
+    <h2>How to use this list</h2>
+    <ol>
+      <li>Identify the chapter matching your product (first two digits of the HSN).</li>
+      <li>Click into the chapter page to see all 4-digit headings.</li>
+      <li>Drill into the heading → subheading → 8-digit tariff item.</li>
+      <li>The 8-digit page shows BCD, SWS, IGST, cess, effective duty rate, and a landed-cost worked example.</li>
+    </ol>
+    <p>Or just type a product name or HSN into the search bar above — the autocomplete indexes all 19,000+ classification nodes.</p>
+  </section>
+
+  <section>
+    <h2>Related resources</h2>
+    <ul>
+      <li><a href="/guide/what-is-hsn-code/">What is an HSN code?</a> — plain-English explainer</li>
+      <li><a href="/guide/customs-duty/">India customs duty explained</a> — how BCD, SWS, cess and IGST stack</li>
+      <li><a href="/calculator/">Duty calculator</a> — plug in any HSN + CIF to get the full breakdown</li>
+      <li><a href="/duty/">Customs duty by product</a> — hand-written walkthroughs for common imports (iPhone, laptop, gold, whisky, etc.)</li>
+    </ul>
+  </section>
 </article>`;
   return layout({ title, description, canonical, bodyHtml: body });
 }
