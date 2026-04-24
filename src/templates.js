@@ -96,6 +96,7 @@ function layout({ title, description, canonical, bodyHtml, jsonLd, includeSearch
 <link rel="preconnect" href="https://rsms.me/" crossorigin>
 <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 <link rel="stylesheet" href="/assets/style.css">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7399885309804978" crossorigin="anonymous"></script>
 ${ld}
 ${extraHeadHtml}
 </head>

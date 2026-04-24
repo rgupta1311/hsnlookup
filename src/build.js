@@ -168,6 +168,14 @@ writeFileSync(join(outDir, "assets/rates.json"), JSON.stringify(ratesMap));
 const INDEXNOW_KEY = "a0fd0c7dfc4b04b561fe074f305f7dcb";
 writeFileSync(join(outDir, `${INDEXNOW_KEY}.txt`), INDEXNOW_KEY);
 
+// Google AdSense ads.txt — authorizes ca-pub-7399885309804978 to sell
+// ad inventory on this domain. Required for AdSense review to pass and
+// for programmatic ad networks to accept our inventory as legitimate.
+writeFileSync(
+  join(outDir, "ads.txt"),
+  "google.com, pub-7399885309804978, DIRECT, f08c47fec0942fa0\n",
+);
+
 console.log(
   `Built ${urls.length} pages · search index: ${searchIdx.length} items · ` +
     `${hs.sectionMap.size} sections, ${hs.chapters.length} chapters, ${hs.headings.length} headings, ${hs.subheadings.length} subheadings, ${india8.length} India 8-digit.`,
