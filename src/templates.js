@@ -1073,6 +1073,81 @@ export function whatIsHsnGuidePage() {
   return layout({ title, description, canonical, bodyHtml: body, extraHeadHtml: jsonLdScripts });
 }
 
+// ————— Data download / bundle landing: /data/ —————
+export function dataBundlePage() {
+  const title = `India HSN + Customs Duty Database (Excel + CSV + JSON) — ${SITE.name}`;
+  const description = `Download the complete India HSN + GST rate database: 12,136 tariff items, Excel with landed-cost formulas, CSV, JSON. One-time purchase, CC-BY-4.0 licensed. Perfect for ERPs, accounting systems and freight forwarders.`;
+  const canonical = SITE.origin + "/data/";
+
+  const body = `
+<article>
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><span>Data download</span></nav>
+
+  <header class="guide-header">
+    <span class="eyebrow">Bundle · 12,136 HSN codes · Updated April 2026</span>
+    <h1>India HSN + Customs Duty Database</h1>
+    <p class="lead">Every India 8-digit ITC(HS) tariff item with BCD, SWS, IGST and cess rates, packaged as a ready-to-use Excel workbook with live landed-cost formulas — plus the same data as CSV and JSON for system integration.</p>
+  </header>
+
+  <section>
+    <h2>What's in the bundle</h2>
+    <ul>
+      <li><strong>hsnlookup-india-2026.xlsx</strong> — Excel workbook, 12,136 rows. Plug any CIF value into column H and see AV, BCD, SWS, Cess, IGST, Total Duty, Landed Cost and Effective Duty % compute live. Frozen header, colour-coded columns, README sheet included.</li>
+      <li><strong>hsnlookup-india-2026.csv</strong> — UTF-8 CSV, machine-readable for any ERP ingestion pipeline.</li>
+      <li><strong>hsnlookup-india-2026.json</strong> — Same dataset, JSON format, identical schema to our live /api/hsn.json endpoint.</li>
+      <li><strong>README.txt</strong> — Schema docs, sources, licence, contact.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Try the free 66-row sample</h2>
+    <p>Covers iPhone, MacBook, gold, whisky, wine, beer, cement, refrigerators, TVs, air conditioners, washing machines, perfume, sunglasses and coffee — the products importers actually ask about.</p>
+    <p><a href="/downloads/sample.csv" download><strong>Download sample.csv →</strong></a> (5 KB, no sign-up)</p>
+  </section>
+
+  <section class="guide-cta">
+    <h2>Get the full bundle — ₹799 / $9</h2>
+    <p>One-time payment, lifetime access to the current build, CC-BY-4.0 licence (use commercially, attribute hsnlookup.in with a visible link). Quarterly refresh updates free to buyers.</p>
+    <p><strong>Buy via Gumroad →</strong> (listing going live shortly — <a href="mailto:hello@hsnlookup.in?subject=Notify%20me%20about%20data%20bundle%20release">email hello@hsnlookup.in to be notified</a>)</p>
+    <p class="note">Want a bulk / commercial licence (unlimited seats, quarterly refresh feed via API, custom schema)? Same inbox — quote your use case.</p>
+  </section>
+
+  <section>
+    <h2>What this bundle is good for</h2>
+    <ul>
+      <li><strong>ERP integrations</strong> — pre-populate an HSN dropdown in your billing software with every Indian tariff line + its GST rate.</li>
+      <li><strong>Freight-forwarder and CHA dashboards</strong> — give clients an up-to-date rate quote without hitting a slow government portal.</li>
+      <li><strong>Import-team landed-cost modelling</strong> — the Excel's live formulas let you model an entire shipment in minutes, not hours.</li>
+      <li><strong>Accounting / GST-filing tools</strong> — build HSN-aware GSTR-1 summaries without maintaining your own rate table.</li>
+      <li><strong>Market-research / analyst models</strong> — CSV ingests cleanly into any pandas / SQL / Power BI pipeline.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Data provenance</h2>
+    <ul>
+      <li><strong>IGST rates:</strong> verified against CBIC GST rate notifications (via Cleartax HSN compilation). Every row carries a verification tag.</li>
+      <li><strong>BCD rates:</strong> 36 hand-reviewed for high-volume codes (iPhone, laptop, gold, etc); chapter-default First Schedule statutory rate for the rest, clearly flagged. Always verify BCD against the current CBIC notification before filing a Bill of Entry.</li>
+      <li><strong>SWS:</strong> 10% of BCD per Finance Act 2018 Section 110.</li>
+      <li><strong>Cess:</strong> GST Compensation Cess rates for the applicable HSNs.</li>
+      <li><strong>Refresh cadence:</strong> after each Union Budget (Feb) and major CBIC consolidated notification. Most recent refresh: April 2026, against Notification 45/2025-Customs + 02/2026-Customs.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Related free resources</h2>
+    <ul>
+      <li><a href="/">HSN search — free</a> (on the homepage)</li>
+      <li><a href="/calculator/">Duty calculator — free</a></li>
+      <li><a href="/api/hsn.json">/api/hsn.json — free public endpoint</a> (same data, not pre-formatted)</li>
+      <li><a href="https://github.com/rgupta1311/india-hsn-dataset" rel="noopener">GitHub: rgupta1311/india-hsn-dataset</a> — CSV + JSON under CC-BY-4.0, version-controlled</li>
+      <li><a href="/guide/customs-duty/">India customs duty guide</a></li>
+    </ul>
+  </section>
+</article>`;
+  return layout({ title, description, canonical, bodyHtml: body });
+}
+
 // ————— HSN code list landing: /hsn-code-list/ —————
 export function hsnCodeListPage(chapters, india8s) {
   const title = `HSN Code List India — All 97 Chapters & 12,000+ 8-digit Codes`;

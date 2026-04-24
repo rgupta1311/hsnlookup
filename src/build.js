@@ -1,4 +1,4 @@
-import { readFileSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { readFileSync, mkdirSync, writeFileSync, rmSync, cpSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -13,6 +13,7 @@ import {
   customsDutyGuidePage,
   whatIsHsnGuidePage,
   hsnCodeListPage,
+  dataBundlePage,
   productDutyPage,
   dutyIndexPage,
   privacyPage,
@@ -88,6 +89,7 @@ write("calculator/index.html", calculatorPage());
 write("guide/customs-duty/index.html", customsDutyGuidePage());
 write("guide/what-is-hsn-code/index.html", whatIsHsnGuidePage());
 write("hsn-code-list/index.html", hsnCodeListPage(hs.chapters, india8));
+write("data/index.html", dataBundlePage());
 
 const india8ByHsn = new Map(india8.map((c) => [c.hsn, c]));
 write("duty/index.html", dutyIndexPage(PRODUCTS, india8ByHsn));
@@ -157,6 +159,7 @@ const urls = [
   "/guide/customs-duty/",
   "/guide/what-is-hsn-code/",
   "/hsn-code-list/",
+  "/data/",
   "/duty/",
   ...PRODUCTS.map((p) => `/duty/${p.slug}/`),
   "/chapters/",
@@ -213,6 +216,15 @@ writeFileSync(join(outDir, "api/hsn.json"), JSON.stringify({
     bcd: c.bcd, sws: c.sws, igst: c.igst, cess: c.cess || 0,
   })),
 }));
+
+// Downloadable assets (Gumroad product zip + free sample CSV).
+// Source lives in data/downloads/ so it survives the public/ rebuild.
+// Regenerate via scripts/buildProductBundle.py when the underlying seed
+// changes.
+const downloadsSrc = join(root, "data/downloads");
+if (existsSync(downloadsSrc)) {
+  cpSync(downloadsSrc, join(outDir, "downloads"), { recursive: true });
+}
 
 // IndexNow key file — lets Bing/Yandex index the site fast after push.
 const INDEXNOW_KEY = "a0fd0c7dfc4b04b561fe074f305f7dcb";
