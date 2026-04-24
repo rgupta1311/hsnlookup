@@ -226,6 +226,24 @@ if (existsSync(downloadsSrc)) {
   cpSync(downloadsSrc, join(outDir, "downloads"), { recursive: true });
 }
 
+// Emit _headers for CORS on /api/* and /downloads/*. Workers Static Assets
+// honours this CF-Pages-style file format — enables cross-origin fetch from
+// our Chrome extension, Jupyter notebooks, and any third-party dev tool.
+writeFileSync(
+  join(outDir, "_headers"),
+  [
+    "/api/*",
+    "  Access-Control-Allow-Origin: *",
+    "  Access-Control-Allow-Methods: GET, HEAD, OPTIONS",
+    "  Cache-Control: public, max-age=3600, must-revalidate",
+    "",
+    "/downloads/*",
+    "  Access-Control-Allow-Origin: *",
+    "  Cache-Control: public, max-age=3600, must-revalidate",
+    "",
+  ].join("\n"),
+);
+
 // IndexNow key file — lets Bing/Yandex index the site fast after push.
 const INDEXNOW_KEY = "a0fd0c7dfc4b04b561fe074f305f7dcb";
 writeFileSync(join(outDir, `${INDEXNOW_KEY}.txt`), INDEXNOW_KEY);

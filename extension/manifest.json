@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "HSN Lookup India — Customs Duty & GST Rate Finder",
+  "short_name": "HSN Lookup India",
+  "version": "1.0.0",
+  "description": "Instantly look up any Indian HSN code, GST rate, and customs duty (BCD, SWS, IGST, cess). 12,136 tariff items, offline after first load.",
+  "author": "hsnlookup.in",
+  "homepage_url": "https://hsnlookup.in",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "HSN Lookup India"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://hsnlookup.in/*"
+  ]
+}

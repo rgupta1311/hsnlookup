@@ -1139,8 +1139,9 @@ export function dataBundlePage() {
     <ul>
       <li><a href="/">HSN search — free</a> (on the homepage)</li>
       <li><a href="/calculator/">Duty calculator — free</a></li>
-      <li><a href="/api/hsn.json">/api/hsn.json — free public endpoint</a> (same data, not pre-formatted)</li>
+      <li><a href="/api/hsn.json">/api/hsn.json — free public endpoint, CORS-enabled</a> (fetch from any browser / notebook / app)</li>
       <li><a href="https://github.com/rgupta1311/india-hsn-dataset" rel="noopener">GitHub: rgupta1311/india-hsn-dataset</a> — CSV + JSON under CC-BY-4.0, version-controlled</li>
+      <li><strong>Chrome extension:</strong> "HSN Lookup India" — instant HSN lookup from your toolbar (offline after first load). <em>Chrome Web Store listing coming soon; drop-in <a href="/downloads/hsn-lookup-india-extension.zip">unpacked build (zip)</a> for dev / sideload use.</em></li>
       <li><a href="/guide/customs-duty/">India customs duty guide</a></li>
     </ul>
   </section>
