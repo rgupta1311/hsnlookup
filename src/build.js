@@ -11,6 +11,8 @@ import {
   aboutPage,
   calculatorPage,
   customsDutyGuidePage,
+  productDutyPage,
+  dutyIndexPage,
   chaptersIndexPage,
   sectionsIndexPage,
   sitemapXml,
@@ -18,6 +20,7 @@ import {
 } from "./templates.js";
 import { loadHS, pad2 } from "./loadHS.js";
 import { buildSearchIndex } from "./searchIndex.js";
+import { PRODUCTS } from "./products.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -59,6 +62,17 @@ write("index.html", homePage(india8, hs.chapters, sections, stats));
 write("about/index.html", aboutPage());
 write("calculator/index.html", calculatorPage());
 write("guide/customs-duty/index.html", customsDutyGuidePage());
+
+const india8ByHsn = new Map(india8.map((c) => [c.hsn, c]));
+write("duty/index.html", dutyIndexPage(PRODUCTS, india8ByHsn));
+for (const product of PRODUCTS) {
+  const hsnEntry = india8ByHsn.get(product.hsn);
+  if (!hsnEntry) {
+    console.warn(`Product ${product.slug} references HSN ${product.hsn} not in seed — skipping`);
+    continue;
+  }
+  write(`duty/${product.slug}/index.html`, productDutyPage(product, hsnEntry));
+}
 write("chapters/index.html", chaptersIndexPage(hs.chapters));
 write("sections/index.html", sectionsIndexPage(sections));
 
@@ -89,9 +103,10 @@ for (const s of hs.subheadings) {
   write(`hs/${s.code}/index.html`, subheadingPage(s, parent4, chapterEntry?.description, sectionName, india8sHere));
 }
 
+const productSlugByHsn = new Map(PRODUCTS.map((p) => [p.hsn, p.slug]));
 for (const c of india8) {
   const parent6 = hs.byCode.get(c.hsn.slice(0, 6));
-  write(`hsn/${c.hsn}/index.html`, hsnPage(c, parent6));
+  write(`hsn/${c.hsn}/index.html`, hsnPage(c, parent6, productSlugByHsn.get(c.hsn) || null));
 }
 
 const urls = [
@@ -99,6 +114,8 @@ const urls = [
   "/about/",
   "/calculator/",
   "/guide/customs-duty/",
+  "/duty/",
+  ...PRODUCTS.map((p) => `/duty/${p.slug}/`),
   "/chapters/",
   "/sections/",
   ...[...hs.sectionMap.keys()].map((s) => `/section/${s.toLowerCase()}/`),
