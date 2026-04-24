@@ -283,6 +283,282 @@ export const PRODUCTS = [
     ],
   },
   {
+    slug: "refrigerator-india",
+    name: "refrigerator",
+    h1: "Customs duty on imported refrigerators in India",
+    hsn: "84182100",
+    hsnDescription: "Household refrigerators, compression-type",
+    typicalCifInr: 80000,
+    typicalScenario: "a 400L side-by-side refrigerator from a US or European retailer",
+    personaHooks: [
+      "Homeowners importing a specific appliance not sold in India",
+      "Returning NRIs bringing appliances in their household shipment",
+      "Hotels/resorts sourcing commercial-grade equipment directly",
+    ],
+    keyInsight:
+      "Refrigerators attract 20% BCD + 10% SWS on BCD + 18% IGST (recently moved down from 28% slab). Effective duty on assessable value: ~44.35%. On a ₹80,000 CIF fridge, landed cost is around ₹1,15,740 before inland freight and installation.",
+    faqs: [
+      {
+        q: "Can I import a refrigerator in my household goods shipment?",
+        a: "Yes, under Transfer of Residence rules a returning Indian with at least two years' residence abroad can bring home appliances at concessional duty (currently 15% all-in on the aggregate value). The TR allowance works differently from the general import duty stack.",
+      },
+      {
+        q: "Are commercial refrigerators classified differently?",
+        a: "Yes. Commercial/industrial refrigeration units (display cabinets, walk-in chillers) fall under HSN 8418.50 or 8418.61 — BCD typically 7.5% lower than household 8418.21. Check your specific unit's classification before filing.",
+      },
+      {
+        q: "Does BIS certification apply?",
+        a: "Yes. Imported refrigerators require a BIS (Bureau of Indian Standards) registration mark under the Compulsory Registration Scheme. Imports without BIS registration are refused clearance regardless of duty paid.",
+      },
+    ],
+  },
+  {
+    slug: "washing-machine-india",
+    name: "washing machine",
+    h1: "Customs duty on imported washing machines in India",
+    hsn: "84501100",
+    hsnDescription: "Fully-automatic washing machines, dry linen capacity ≤ 10 kg",
+    typicalCifInr: 60000,
+    typicalScenario: "a front-load washer-dryer combo from a European manufacturer",
+    personaHooks: [
+      "Homeowners looking at models not available locally",
+      "Returning NRIs shipping household appliances",
+      "Industrial laundries importing commercial-grade equipment",
+    ],
+    keyInsight:
+      "Washing machines under 10 kg capacity attract 20% BCD + 10% SWS + 18% IGST — an effective 44.35% on assessable value. Machines above 10 kg capacity fall under HSN 8450.20 with the same rate structure. Industrial laundry machines (HSN 8451) are at 7.5% BCD with partial concessions.",
+    faqs: [
+      {
+        q: "Is there any duty concession on energy-efficient imports?",
+        a: "Not at the BCD level. India's energy-efficiency push works via the BEE (Bureau of Energy Efficiency) star-rating system on domestic sales — it affects what can be sold, not import duty.",
+      },
+      {
+        q: "Do combined washer-dryers classify the same?",
+        a: "Yes. Machines that wash and dry in the same drum classify under 8450.11 or 8450.12 (same rate as washing-only machines). Separate dryers classify under 8451.21 with a slightly different structure.",
+      },
+    ],
+  },
+  {
+    slug: "air-conditioner-india",
+    name: "air conditioner",
+    h1: "Customs duty on imported air conditioners in India",
+    hsn: "84158110",
+    hsnDescription: "Split air conditioners incorporating a refrigerating unit with a reversing valve",
+    typicalCifInr: 45000,
+    typicalScenario: "a 1.5 ton inverter split AC from an international brand",
+    personaHooks: [
+      "Builders importing centralized HVAC units for commercial projects",
+      "Homeowners sourcing specific models not sold domestically",
+      "Hotel chains standardizing equipment across properties",
+    ],
+    keyInsight:
+      "Split ACs attract 20% BCD + 10% SWS + 28% IGST (AC units are in the 28% GST slab). Effective duty: ~56.25% on assessable value. On a ₹45,000 CIF AC, landed cost is around ₹70,310 before dealer margin and installation. The 28% IGST slab is why imported ACs are dramatically more expensive than domestically-assembled units sold at Indian retail.",
+    faqs: [
+      {
+        q: "Are window ACs duty-treated the same?",
+        a: "Yes, both split and window AC units under 2 tonne fall under HSN 8415.10 with the same duty structure. Larger central-plant AC systems (HSN 8415.81/82) have a different rate structure, often with concessions for HVAC used in manufacturing facilities.",
+      },
+      {
+        q: "What about refrigerant considerations?",
+        a: "Import of HCFC-22 refrigerant (found in older split ACs) is progressively restricted under India's Montreal Protocol commitments. New-gen R-32/R-410A units clear customs normally; legacy R-22 units need additional ODS import authorization.",
+      },
+    ],
+  },
+  {
+    slug: "smart-tv-india",
+    name: "smart TV",
+    h1: "Customs duty on imported televisions in India",
+    hsn: "85287219",
+    hsnDescription: "LCD/LED television sets, colour",
+    typicalCifInr: 70000,
+    typicalScenario: "a 55-inch 4K OLED TV from an international retailer",
+    personaHooks: [
+      "Home theatre enthusiasts buying premium models",
+      "Hotels sourcing in-room TVs in bulk",
+      "Returning NRIs importing household electronics",
+    ],
+    keyInsight:
+      "TVs attract 15% BCD + 10% SWS + 28% IGST — effective 47.25% on assessable value. On a ₹70,000 CIF TV, landed cost is around ₹1,03,100. The 28% IGST slab applies to all display devices above 32\" diagonal; smaller sets historically had concessional rates but those have been rationalized.",
+    faqs: [
+      {
+        q: "Is 4K / 8K or HDR-capability treated differently?",
+        a: "No. The duty structure depends on screen size, not resolution or HDR. Anything under HSN 8528.72 (colour television sets) gets 15% BCD regardless of feature set.",
+      },
+      {
+        q: "Do I need BIS registration?",
+        a: "Yes. All TVs imported into India require BIS Compulsory Registration Scheme (CRS) mark. Non-compliant imports are refused clearance.",
+      },
+      {
+        q: "What about TVs imported as display monitors for commercial use?",
+        a: "Large displays (60\"+) used for digital signage may classify under HSN 8528.52 (monitors for ADP) with 0% BCD — but this is only valid if the display is genuinely used with a computer and not for broadcast reception. Customs disputes on this classification are common.",
+      },
+    ],
+  },
+  {
+    slug: "wine-india",
+    name: "imported wine",
+    h1: "Customs duty on imported wine in India",
+    hsn: "22042110",
+    hsnDescription: "Wine of fresh grapes — Port and other red wines",
+    typicalCifInr: 3000,
+    typicalScenario: "a bottle of mid-tier French Bordeaux from a European importer",
+    personaHooks: [
+      "Restaurants and hotels importing for their wine lists",
+      "Licensed retailers building a premium wine catalogue",
+      "Wine enthusiasts exploring import legality",
+    ],
+    keyInsight:
+      "Wine attracts 150% BCD + 10% SWS on BCD — no IGST (alcoholic liquor is outside GST, state excise applies). On a ₹3,000 CIF bottle, BCD + SWS land at ~₹4,954, so duty alone roughly doubles the imported price before state excise piles on another 100–300%.",
+    faqs: [
+      {
+        q: "Can an individual import wine for personal use?",
+        a: "Only within the ₹50,000 baggage allowance at an international airport (total 2 litres of alcohol for passengers 18+). Personal courier imports of wine require a state excise licence — there's no exception.",
+      },
+      {
+        q: "Does the India-Australia ECTA reduce wine BCD?",
+        a: "Yes, the ECTA introduced phased BCD reductions on Australian wines starting at ₹5,000+/case ($375 FOB) — dropping from 150% towards 25% over ten years. Rules of origin require the wine to be substantially Australian (grapes grown there, vinified there).",
+      },
+      {
+        q: "What about sparkling wine and champagne?",
+        a: "Sparkling wine (HSN 2204.10) is at 150% BCD like still wine. Champagne specifically classifies under 2204.10 — appellation is irrelevant to customs, it's a sparkling wine.",
+      },
+    ],
+  },
+  {
+    slug: "beer-india",
+    name: "imported beer",
+    h1: "Customs duty on imported beer in India",
+    hsn: "22030000",
+    hsnDescription: "Beer made from malt",
+    typicalCifInr: 500,
+    typicalScenario: "a case of Belgian craft beer from a specialist importer",
+    personaHooks: [
+      "Craft-beer bars and restaurants building imported taplists",
+      "Licensed specialty retailers",
+      "Consumers curious about duty on premium imported beer",
+    ],
+    keyInsight:
+      "Beer attracts 100% BCD + 10% SWS on BCD — no IGST. On a ₹500 CIF bottle, BCD + SWS add ~₹551, so duty more than doubles the bottle before state excise. This is why even mass-market imported beer lands at 3-5× the home-country price in Indian specialty stores.",
+    faqs: [
+      {
+        q: "What's the difference between lager, ale, stout for duty?",
+        a: "None — all beers made from malt classify under HSN 2203.00 with the same 100% BCD. Non-alcoholic beer falls under 2202.91 with a lower 30% BCD and IGST applies as it's not alcoholic liquor.",
+      },
+      {
+        q: "Can breweries import bulk beer for local packaging?",
+        a: "Yes, under a state excise-licensed arrangement. Bulk beer imports still attract 100% BCD — there's no processing concession.",
+      },
+    ],
+  },
+  {
+    slug: "chocolate-india",
+    name: "chocolate",
+    h1: "Customs duty on imported chocolate in India",
+    hsn: "18069010",
+    hsnDescription: "Chocolate and chocolate products",
+    typicalCifInr: 800,
+    typicalScenario: "a box of Swiss premium chocolate from a European online retailer",
+    personaHooks: [
+      "Individuals buying premium chocolate not sold in India",
+      "Gift retailers importing luxury confectionery",
+      "HoReCa buyers sourcing specialty ingredients",
+    ],
+    keyInsight:
+      "Chocolate attracts 30% BCD + 10% SWS + 18% IGST — effective 54.12% on assessable value. On a ₹800 CIF box, landed cost is around ₹1,233. Chocolate is one of the few sweet goods with 30% BCD specifically — protecting domestic confectionery manufacturing.",
+    faqs: [
+      {
+        q: "Is cocoa powder treated the same?",
+        a: "Raw cocoa powder (HSN 1805) gets 30% BCD + 5% IGST. Chocolate liquor/paste (HSN 1803) gets 30% BCD + 18% IGST. The finished-chocolate rate (HSN 1806) applies to anything packaged for consumption.",
+      },
+      {
+        q: "Are FSSAI requirements strict?",
+        a: "Yes. All imported food products including chocolate require FSSAI registration and labelling compliance before customs clearance. A non-compliant shipment gets held by FSSAI even if duty is paid.",
+      },
+    ],
+  },
+  {
+    slug: "coffee-india",
+    name: "coffee",
+    h1: "Customs duty on imported coffee in India",
+    hsn: "09011111",
+    hsnDescription: "Coffee, not roasted, not decaffeinated — Arabica plantation A grade",
+    typicalCifInr: 15000,
+    typicalScenario: "200 kg of Ethiopian specialty-grade green coffee for a roastery",
+    personaHooks: [
+      "Specialty coffee roasters sourcing green beans from origin",
+      "Café chains importing signature blends",
+      "Traders competing with domestic plantation output",
+    ],
+    keyInsight:
+      "Green coffee attracts 100% BCD + 10% SWS + 5% IGST — effective ~115.5% on assessable value. Roasted coffee (HSN 0901.21) is at a similar rate. India is a net coffee exporter so imports are protected to keep domestic plantation prices defended. Most specialty roasters doing imports source via green-coffee traders who aggregate under SAARC / FTA concessional notifications where applicable.",
+    faqs: [
+      {
+        q: "Are FTA concessions available on coffee?",
+        a: "Yes. India-ASEAN and India-Sri Lanka FTAs offer concessional BCD (typically 50% off, subject to rules of origin). Specialty beans from Ethiopia / Kenya / Colombia don't have an FTA — they pay the full 100%.",
+      },
+      {
+        q: "Does instant coffee attract the same rate?",
+        a: "Instant coffee (HSN 2101.11) is at 30% BCD + 18% IGST — a significantly lower-BCD path often used to import high-value coffee extracts for re-blending.",
+      },
+    ],
+  },
+  {
+    slug: "camera-india",
+    name: "camera",
+    h1: "Customs duty on imported cameras in India",
+    hsn: "90061000",
+    hsnDescription: "Photographic cameras",
+    typicalCifInr: 120000,
+    typicalScenario: "a full-frame mirrorless camera body bought from the US",
+    personaHooks: [
+      "Professional photographers sourcing gear cheaper abroad",
+      "Content creators buying specialty lenses or cinema cameras",
+      "Returning travellers with a camera purchased abroad",
+    ],
+    keyInsight:
+      "Photographic cameras attract 10% BCD + 10% SWS + 18% IGST — effective 30.98% on assessable value. On a ₹1,20,000 CIF camera, landed cost is around ₹1,57,180. Notably lower than the 44.35% on most consumer electronics because photographic equipment historically had industrial/creative-goods carve-outs in the tariff.",
+    faqs: [
+      {
+        q: "Are lenses and accessories treated the same?",
+        a: "Camera lenses (HSN 9002) are at 10% BCD + 18% IGST — same as camera bodies. Memory cards (HSN 8523) are at 0% BCD + 18% IGST. Flash units (HSN 9006.61) are at 10% BCD + 18% IGST.",
+      },
+      {
+        q: "What about cinema/professional video cameras?",
+        a: "Broadcast and cinema cameras (HSN 8525.80) attract 10% BCD + 18% IGST. Some cinema cameras used by registered production companies can claim end-use-based concessions under 45/2025-Customs.",
+      },
+      {
+        q: "Can I bring a camera in baggage duty-free?",
+        a: "The ₹50,000 baggage allowance covers a camera for personal use. Professional gear worth more than the allowance is assessed at the 38.5% baggage duty rate — often cheaper than commercial courier clearance.",
+      },
+    ],
+  },
+  {
+    slug: "cosmetics-india",
+    name: "cosmetics and skincare",
+    h1: "Customs duty on imported cosmetics and skincare in India",
+    hsn: "33049990",
+    hsnDescription: "Beauty, make-up and skin-care preparations",
+    typicalCifInr: 5000,
+    typicalScenario: "a haul of Korean or Japanese skincare products from an international e-commerce site",
+    personaHooks: [
+      "Individuals buying K-beauty or J-beauty products not sold in India",
+      "Small resellers running Instagram storefronts",
+      "Salons and spas importing professional-grade products",
+    ],
+    keyInsight:
+      "Cosmetics attract 20% BCD + 10% SWS + 28% IGST (cosmetics are in the 28% GST slab as a luxury good). Effective duty: ~56.25% on assessable value. On a ₹5,000 CIF haul, landed cost is around ₹7,815 before courier fees.",
+    faqs: [
+      {
+        q: "Is cosmetic import regulated beyond customs?",
+        a: "Yes. Cosmetic imports require CDSCO (Central Drugs Standard Control Organisation) registration under the Drugs and Cosmetics Rules. Unregistered cosmetic imports are refused even if duty is paid. The registration process is product-by-product and takes weeks to months.",
+      },
+      {
+        q: "Do mini sizes or travel samples qualify for the gift exemption?",
+        a: "Unsolicited gifts up to ₹5,000 CIF may qualify for nil duty under Notification 171/93-Cus. A commercial order of \"samples\" doesn't qualify even if individually small — customs looks at the total shipment value and commercial intent.",
+      },
+    ],
+  },
+  {
     slug: "playstation-india",
     name: "PlayStation",
     h1: "Customs duty on PlayStation, Xbox and other gaming consoles in India",

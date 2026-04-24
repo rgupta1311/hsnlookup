@@ -433,6 +433,16 @@ export function homePage(india8s, chapters, sections, stats) {
     <li><a href="/duty/watch-india/"><strong>Wrist watch</strong> <span>HSN 9102.29.00 — 44.35% effective</span></a></li>
     <li><a href="/duty/perfume-india/"><strong>Perfume</strong> <span>HSN 3303.00.10 — 44.35% effective</span></a></li>
     <li><a href="/duty/sunglasses-india/"><strong>Sunglasses</strong> <span>HSN 9004.10.00 — 44.35% effective</span></a></li>
+    <li><a href="/duty/refrigerator-india/"><strong>Refrigerator</strong> <span>HSN 8418.21.00 — 44.35% effective</span></a></li>
+    <li><a href="/duty/washing-machine-india/"><strong>Washing machine</strong> <span>HSN 8450.11.00 — 44.35% effective</span></a></li>
+    <li><a href="/duty/air-conditioner-india/"><strong>Air conditioner</strong> <span>HSN 8415.81.10 — 56.25% effective</span></a></li>
+    <li><a href="/duty/smart-tv-india/"><strong>Smart TV</strong> <span>HSN 8528.72.19 — 47.25% effective</span></a></li>
+    <li><a href="/duty/wine-india/"><strong>Wine</strong> <span>HSN 2204.21.10 — ~165% effective</span></a></li>
+    <li><a href="/duty/beer-india/"><strong>Beer</strong> <span>HSN 2203.00.00 — ~110% effective</span></a></li>
+    <li><a href="/duty/chocolate-india/"><strong>Chocolate</strong> <span>HSN 1806.90.10 — 54.12% effective</span></a></li>
+    <li><a href="/duty/coffee-india/"><strong>Coffee (green)</strong> <span>HSN 0901.11.11 — ~115% effective</span></a></li>
+    <li><a href="/duty/camera-india/"><strong>Camera</strong> <span>HSN 9006.10.00 — 30.98% effective</span></a></li>
+    <li><a href="/duty/cosmetics-india/"><strong>Cosmetics / skincare</strong> <span>HSN 3304.99.90 — 56.25% effective</span></a></li>
   </ul>
   <p><a href="/duty/">See all product-duty pages →</a></p>
 </section>
