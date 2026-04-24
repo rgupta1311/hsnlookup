@@ -397,6 +397,77 @@ article section:first-child { margin-top: 0; }
   .calc-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ————— Guide (long-form article) ————— */
+.guide { font-size: 16px; line-height: 1.7; }
+.guide-header { margin-bottom: 16px; padding: 24px 0 8px; border-bottom: 1px solid var(--border); }
+.guide-header h1 { font-size: 30px; letter-spacing: -0.02em; margin: 8px 0 10px; max-width: 760px; }
+.guide-header .lead { max-width: 760px; font-size: 17px; }
+.guide p { margin: 12px 0; }
+.guide ul, .guide ol { margin: 12px 0 12px 24px; padding: 0; }
+.guide li { margin: 6px 0; }
+.guide h2 { font-size: 22px; margin-top: 36px; padding-top: 8px; letter-spacing: -0.01em; scroll-margin-top: 80px; }
+.guide h3 { font-size: 17px; margin-top: 20px; color: var(--fg); }
+.guide section { margin-top: 28px; }
+.guide code { background: var(--panel); padding: 1px 6px; border-radius: 4px; color: var(--fg); }
+.guide pre.formula {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  padding: 16px 18px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin: 14px 0;
+}
+.guide pre.formula code { background: transparent; color: inherit; padding: 0; }
+.guide table { margin: 14px 0 18px; font-size: 14px; }
+.tldr {
+  display: block;
+  background: var(--brand-soft);
+  border-left: 4px solid var(--brand);
+  padding: 16px 20px;
+  border-radius: 0 8px 8px 0;
+  color: var(--fg);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 18px 0 24px;
+}
+.tldr strong { color: var(--brand-dark); margin-right: 4px; }
+.toc {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  margin: 24px 0 32px;
+  font-size: 14.5px;
+}
+.toc strong { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--fg-muted); margin-bottom: 6px; }
+.toc ol { margin: 4px 0 0 20px; padding: 0; }
+.toc li { margin: 3px 0; }
+.toc a { color: var(--fg); }
+.toc a:hover { color: var(--brand); }
+.faq-item { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 14px; }
+.faq-item:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.faq-item h3 { margin: 0 0 6px; font-size: 16px; color: var(--fg); }
+.faq-item p { margin: 0; color: var(--fg); }
+.guide-cta {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-top: 36px;
+}
+.guide-cta h2 { margin-top: 0; }
+.home-guide-cta {
+  background: var(--brand-soft);
+  border: 1px solid var(--brand);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-top: 24px;
+}
+.home-guide-cta h2 { margin-top: 0; color: var(--brand-dark); }
+.home-guide-cta p { margin: 0; color: var(--fg); }
+
 /* ————— Responsive ————— */
 @media (max-width: 640px) {
   h1 { font-size: 26px; }
