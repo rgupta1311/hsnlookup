@@ -24,19 +24,43 @@ const sectionUrl = (s) => `/section/${s.toLowerCase()}/`;
 const searchIcon = `<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 3.362 9.848l3.145 3.146a.75.75 0 1 0 1.06-1.06l-3.145-3.146A5.5 5.5 0 0 0 9 3.5ZM5 9a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" clip-rule="evenodd"/></svg>`;
 
 function verificationBlock(code) {
-  const status = code.verificationStatus || "statutory-first-schedule";
-  const asOf = code.asOf || "2026-04-24";
-  const verifiedAgainst45 = status === "confirmed-45-2025";
-  const tag = verifiedAgainst45
-    ? `<span class="verify-badge verify-confirmed">Confirmed against Notification 45/2025-Customs</span>`
-    : `<span class="verify-badge verify-statutory">Statutory First Schedule rate</span>`;
-  const body = verifiedAgainst45
-    ? `<p>Rate cross-checked against CBIC's consolidated exemption notification <strong>No. 45/2025-Customs</strong> (dated 24-Oct-2025) — the master document importers reference for effective BCD and IGST rates.</p>`
-    : `<p>The rate shown is the statutory First Schedule rate from the Customs Tariff Act, 1975. India's consolidated exemption notification (<a href="https://abcaus.in/wp-content/uploads/2025/10/cst-45-2025.pdf" rel="nofollow noopener">45/2025-Customs</a>) does not list a concessional rate for this specific tariff item. Before filing a Bill of Entry, verify against the current CBIC notification for any end-use, origin-specific (FTA) or conditional concession that may reduce your actual liability.</p>`;
+  // Support both the old flat schema and the new per-field schema.
+  const v = code.verification || {};
+  const igstSource = v.igst || (code.verificationStatus === "confirmed-45-2025" ? "notif-45-2025" : "inherited");
+  const bcdSource = v.bcd || (code.verificationStatus === "confirmed-45-2025" ? "notif-45-2025" : "statutory");
+  const asOf = v.asOf || code.asOf || "2026-04-24";
+
+  const igstBadge =
+    igstSource === "cleartax-cbic-gst"
+      ? `<span class="verify-badge verify-confirmed">IGST verified against CBIC GST rate schedule</span>`
+      : igstSource === "notif-45-2025"
+        ? `<span class="verify-badge verify-confirmed">IGST confirmed via Notification 45/2025-Customs</span>`
+        : `<span class="verify-badge verify-statutory">IGST — inherited</span>`;
+
+  const bcdBadge =
+    bcdSource === "manual"
+      ? `<span class="verify-badge verify-confirmed">BCD hand-reviewed</span>`
+      : bcdSource === "notif-45-2025"
+        ? `<span class="verify-badge verify-confirmed">BCD confirmed via Notification 45/2025-Customs</span>`
+        : `<span class="verify-badge verify-statutory">BCD — chapter-default statutory estimate</span>`;
+
+  const igstExplainer =
+    igstSource === "cleartax-cbic-gst"
+      ? `<p>IGST rate is cross-checked against CBIC's GST rate schedule for Chapter ${pad2(code.chapter)}, via the Cleartax HSN compilation (which maintains CBIC notifications current).</p>`
+      : "";
+
+  const bcdExplainer =
+    bcdSource === "chapter-default"
+      ? `<p>BCD shown is the commonly-cited First Schedule statutory rate for Chapter ${pad2(code.chapter)}. The Customs Tariff Act First Schedule is not freely machine-readable; specific tariff lines can attract lower rates via CBIC notifications or higher rates via trade-remedy duties. Before filing a Bill of Entry, <a href="https://www.cbic.gov.in/" rel="nofollow noopener">verify BCD against the current CBIC notification</a> for this HSN.</p>`
+      : bcdSource === "manual"
+        ? `<p>BCD rate for this HSN is hand-curated from CBIC notifications, the First Schedule of the Customs Tariff Act, and recent Finance Act amendments. Last hand-review: ${asOf}.</p>`
+        : "";
+
   const specific = code.notes_verification
     ? `<p class="note">${esc(code.notes_verification)}</p>`
     : "";
-  return `${tag}<div class="verify-body">${body}${specific}<p class="verify-asof">Rate as last reviewed: <time datetime="${asOf}">${asOf}</time>. Dataset refreshed from CBIC notifications — see the <a href="/about/">About page</a> for the full source list and refresh process.</p></div>`;
+
+  return `<div class="verify-badges">${igstBadge} ${bcdBadge}</div><div class="verify-body">${igstExplainer}${bcdExplainer}${specific}<p class="verify-asof">Rates as last reviewed: <time datetime="${asOf}">${asOf}</time>. See the <a href="/about/">About page</a> for full source list and refresh process.</p></div>`;
 }
 
 function searchBarHtml({ placeholder = "Search HSN code or product (e.g. 8517, smartphone, laptop)…", autofocus = false } = {}) {
@@ -384,7 +408,7 @@ export function homePage(india8s, chapters, sections, stats) {
     <div class="stat"><div class="stat-val">${stats.sections}</div><div class="stat-label">Sections</div></div>
     <div class="stat"><div class="stat-val">${stats.chapters}</div><div class="stat-label">Chapters</div></div>
     <div class="stat"><div class="stat-val">${stats.subheadings.toLocaleString("en-IN")}</div><div class="stat-label">HS subheadings</div></div>
-    <div class="stat"><div class="stat-val">${stats.india8}</div><div class="stat-label">With duty rates</div></div>
+    <div class="stat"><div class="stat-val">${stats.india8.toLocaleString("en-IN")}</div><div class="stat-label">8-digit HSN with verified IGST</div></div>
   </div>
 </section>
 <section>

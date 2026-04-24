@@ -111,8 +111,8 @@ export const PRODUCTS = [
     slug: "whisky-india",
     name: "whisky",
     h1: "Customs duty on imported whisky and spirits in India",
-    hsn: "22083000",
-    hsnDescription: "Whiskies",
+    hsn: "22083012",
+    hsnDescription: "Whiskies — Scotch",
     typicalCifInr: 5000, // a bottle of Scotch CIF
     typicalScenario: "a bottle of single-malt Scotch ordered from a UK retailer",
     personaHooks: [

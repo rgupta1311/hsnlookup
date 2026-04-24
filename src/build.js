@@ -35,8 +35,26 @@ const write = (relPath, contents) => {
   writeFileSync(fullPath, contents);
 };
 
-const seed = JSON.parse(readFileSync(join(root, "data/seed/hsn.json"), "utf8"));
-const india8 = seed.codes;
+// Prefer the expanded seed (14k+ codes with IGST verified via Cleartax/CBIC)
+// and fall back to the hand-curated seed if the expansion file is absent.
+let seed;
+try {
+  seed = JSON.parse(readFileSync(join(root, "data/seed/hsn_expanded.json"), "utf8"));
+} catch {
+  seed = JSON.parse(readFileSync(join(root, "data/seed/hsn.json"), "utf8"));
+}
+// Filter out low-value 8-digit pages whose Cleartax description is pure
+// filler ("OTHER", "-", empty, or shorter than 4 chars). These don't
+// generate search demand and would consume our 20k-file budget on CF's
+// free tier for no SEO return.
+function isFillerDescription(d) {
+  if (!d) return true;
+  const t = d.trim().toLowerCase();
+  if (t.length <= 3) return true;
+  if (t === "other" || t === "others" || t === "-") return true;
+  return false;
+}
+const india8 = seed.codes.filter((c) => !isFillerDescription(c.description));
 
 const india8By6 = new Map();
 const india8ByChapter = new Map();

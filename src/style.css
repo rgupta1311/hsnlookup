@@ -470,6 +470,7 @@ article section:first-child { margin-top: 0; }
 
 /* ————— Rate verification badge ————— */
 .verification { margin-top: 28px; padding-top: 20px; border-top: 1px dashed var(--border); }
+.verify-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .verify-badge {
   display: inline-block;
   padding: 4px 12px;
