@@ -468,6 +468,24 @@ article section:first-child { margin-top: 0; }
 .home-guide-cta h2 { margin-top: 0; color: var(--brand-dark); }
 .home-guide-cta p { margin: 0; color: var(--fg); }
 
+/* ————— Rate verification badge ————— */
+.verification { margin-top: 28px; padding-top: 20px; border-top: 1px dashed var(--border); }
+.verify-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.verify-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+.verify-confirmed { background: var(--accent-soft); color: #065f46; }
+.verify-statutory { background: #fef3c7; color: #78350f; }
+.verify-body p { font-size: 14px; color: var(--fg-muted); margin: 8px 0; }
+.verify-body .note { color: #78350f; }
+.verify-asof { font-size: 12px; color: var(--fg-subtle); }
+
 /* ————— Responsive ————— */
 @media (max-width: 640px) {
   h1 { font-size: 26px; }

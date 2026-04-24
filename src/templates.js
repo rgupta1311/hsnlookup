@@ -23,6 +23,46 @@ const sectionUrl = (s) => `/section/${s.toLowerCase()}/`;
 
 const searchIcon = `<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 1 0 3.362 9.848l3.145 3.146a.75.75 0 1 0 1.06-1.06l-3.145-3.146A5.5 5.5 0 0 0 9 3.5ZM5 9a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" clip-rule="evenodd"/></svg>`;
 
+function verificationBlock(code) {
+  // Support both the old flat schema and the new per-field schema.
+  const v = code.verification || {};
+  const igstSource = v.igst || (code.verificationStatus === "confirmed-45-2025" ? "notif-45-2025" : "inherited");
+  const bcdSource = v.bcd || (code.verificationStatus === "confirmed-45-2025" ? "notif-45-2025" : "statutory");
+  const asOf = v.asOf || code.asOf || "2026-04-24";
+
+  const igstBadge =
+    igstSource === "cleartax-cbic-gst"
+      ? `<span class="verify-badge verify-confirmed">IGST verified against CBIC GST rate schedule</span>`
+      : igstSource === "notif-45-2025"
+        ? `<span class="verify-badge verify-confirmed">IGST confirmed via Notification 45/2025-Customs</span>`
+        : `<span class="verify-badge verify-statutory">IGST — inherited</span>`;
+
+  const bcdBadge =
+    bcdSource === "manual"
+      ? `<span class="verify-badge verify-confirmed">BCD hand-reviewed</span>`
+      : bcdSource === "notif-45-2025"
+        ? `<span class="verify-badge verify-confirmed">BCD confirmed via Notification 45/2025-Customs</span>`
+        : `<span class="verify-badge verify-statutory">BCD — chapter-default statutory estimate</span>`;
+
+  const igstExplainer =
+    igstSource === "cleartax-cbic-gst"
+      ? `<p>IGST rate is cross-checked against CBIC's GST rate schedule for Chapter ${pad2(code.chapter)}, via the Cleartax HSN compilation (which maintains CBIC notifications current).</p>`
+      : "";
+
+  const bcdExplainer =
+    bcdSource === "chapter-default"
+      ? `<p>BCD shown is the commonly-cited First Schedule statutory rate for Chapter ${pad2(code.chapter)}. The Customs Tariff Act First Schedule is not freely machine-readable; specific tariff lines can attract lower rates via CBIC notifications or higher rates via trade-remedy duties. Before filing a Bill of Entry, <a href="https://www.cbic.gov.in/" rel="nofollow noopener">verify BCD against the current CBIC notification</a> for this HSN.</p>`
+      : bcdSource === "manual"
+        ? `<p>BCD rate for this HSN is hand-curated from CBIC notifications, the First Schedule of the Customs Tariff Act, and recent Finance Act amendments. Last hand-review: ${asOf}.</p>`
+        : "";
+
+  const specific = code.notes_verification
+    ? `<p class="note">${esc(code.notes_verification)}</p>`
+    : "";
+
+  return `<div class="verify-badges">${igstBadge} ${bcdBadge}</div><div class="verify-body">${igstExplainer}${bcdExplainer}${specific}<p class="verify-asof">Rates as last reviewed: <time datetime="${asOf}">${asOf}</time>. See the <a href="/about/">About page</a> for full source list and refresh process.</p></div>`;
+}
+
 function searchBarHtml({ placeholder = "Search HSN code or product (e.g. 8517, smartphone, laptop)…", autofocus = false } = {}) {
   return `
 <div class="search-wrap">
@@ -65,9 +105,9 @@ ${extraHeadHtml}
     <a href="/" class="logo"><span class="logo-mark">हS</span>${SITE.name}</a>
     <nav>
       <a href="/calculator/">Calculator</a>
+      <a href="/duty/">Duty by product</a>
       <a href="/guide/customs-duty/">Guide</a>
       <a href="/chapters/">Chapters</a>
-      <a href="/sections/">Sections</a>
       <a href="/about/">About</a>
     </nav>
   </div>
@@ -83,7 +123,7 @@ ${includeSearch ? '<script src="/assets/search.js" defer></script>' : ""}
 }
 
 // ————— 8-digit HSN page —————
-export function hsnPage(code, parent6) {
+export function hsnPage(code, parent6, productSlug = null) {
   const example = computeDuty(100000, code);
   const ch = pad2(code.chapter);
   const heading4 = code.hsn.slice(0, 4);
@@ -166,6 +206,12 @@ export function hsnPage(code, parent6) {
     <p>HSN (Harmonised System of Nomenclature) code ${esc(code.hsn)} falls under Chapter ${ch} of India's Customs Tariff Act. The first six digits (${esc(code.hsn.slice(0, 6))}) follow the World Customs Organization's global HS 2022 classification; the last two digits are India's national extension.</p>
     <p>For import, declare this 8-digit code on the Bill of Entry in ICEGATE. For GST-registered taxpayers with turnover above ₹5 crore, the 8-digit HSN is also mandatory on B2B invoices.</p>
     <p>Not sure how the four duty components stack on top of each other? Read <a href="/guide/customs-duty/">India customs duty, explained — with two worked examples</a>.</p>
+    ${productSlug ? `<p>Importing this specifically as an individual? See the product-focused walkthrough: <a href="/duty/${productSlug}/">Customs duty on ${esc(productSlug.replace(/-india$/, "").replace(/-/g, " "))} in India</a>.</p>` : ""}
+  </section>
+
+  <section class="verification">
+    <h2>Rate verification</h2>
+    ${verificationBlock(code)}
   </section>
 </article>`;
 
@@ -362,7 +408,7 @@ export function homePage(india8s, chapters, sections, stats) {
     <div class="stat"><div class="stat-val">${stats.sections}</div><div class="stat-label">Sections</div></div>
     <div class="stat"><div class="stat-val">${stats.chapters}</div><div class="stat-label">Chapters</div></div>
     <div class="stat"><div class="stat-val">${stats.subheadings.toLocaleString("en-IN")}</div><div class="stat-label">HS subheadings</div></div>
-    <div class="stat"><div class="stat-val">${stats.india8}</div><div class="stat-label">With duty rates</div></div>
+    <div class="stat"><div class="stat-val">${stats.india8.toLocaleString("en-IN")}</div><div class="stat-label">8-digit HSN with verified IGST</div></div>
   </div>
 </section>
 <section>
@@ -372,6 +418,23 @@ export function homePage(india8s, chapters, sections, stats) {
 <section class="home-guide-cta">
   <h2>New to Indian customs?</h2>
   <p>Read the full walkthrough: <a href="/guide/customs-duty/"><strong>India customs duty, explained — with two worked examples</strong></a>. BCD, SWS, cess, IGST; the stacking formula; FTA exemptions; anti-dumping; and the HSN classification rules importers actually get caught on.</p>
+</section>
+<section>
+  <h2>Customs duty by product</h2>
+  <p>Want the direct answer for what you're importing? Per-product walkthroughs with HSN, rate stack and a worked landed-cost example:</p>
+  <ul class="code-list">
+    <li><a href="/duty/iphone-india/"><strong>iPhone</strong> <span>HSN 8517.13.00 — 44.35% effective</span></a></li>
+    <li><a href="/duty/laptop-india/"><strong>Laptop</strong> <span>HSN 8471.30.10 — 18% effective</span></a></li>
+    <li><a href="/duty/gold-india/"><strong>Gold</strong> <span>HSN 7108.13.00 — 19.6% effective</span></a></li>
+    <li><a href="/duty/whisky-india/"><strong>Whisky</strong> <span>HSN 2208.30.00 — 165% effective</span></a></li>
+    <li><a href="/duty/car-india/"><strong>Car (CBU)</strong> <span>HSN 8703.23.91 — ~166% effective</span></a></li>
+    <li><a href="/duty/playstation-india/"><strong>PlayStation</strong> <span>HSN 9504.50.00 — 57.85% effective</span></a></li>
+    <li><a href="/duty/solar-panel-india/"><strong>Solar panel</strong> <span>HSN 8541.43.00 — ~59.5% effective</span></a></li>
+    <li><a href="/duty/watch-india/"><strong>Wrist watch</strong> <span>HSN 9102.29.00 — 44.35% effective</span></a></li>
+    <li><a href="/duty/perfume-india/"><strong>Perfume</strong> <span>HSN 3303.00.10 — 44.35% effective</span></a></li>
+    <li><a href="/duty/sunglasses-india/"><strong>Sunglasses</strong> <span>HSN 9004.10.00 — 44.35% effective</span></a></li>
+  </ul>
+  <p><a href="/duty/">See all product-duty pages →</a></p>
 </section>
 <section>
   <h2>Browse all 21 sections</h2>
@@ -453,6 +516,172 @@ export function calculatorPage() {
     title, description, canonical, bodyHtml: body,
     extraHeadHtml: '<script src="/assets/calculator.js" defer></script>',
   });
+}
+
+// ————— Product duty pages: /duty/[slug]/ —————
+export function productDutyPage(product, hsnEntry) {
+  const example = computeDuty(product.typicalCifInr, hsnEntry);
+  const ch = pad2(hsnEntry.chapter);
+  const title = `Customs duty on ${product.name} in India — ${example.effectiveRate}% all-in — ${SITE.name}`;
+  const description = `${product.name} imported into India: BCD ${hsnEntry.bcd}%, SWS ${hsnEntry.sws}% of BCD, IGST ${hsnEntry.igst}%${hsnEntry.cess ? `, Cess ${hsnEntry.cess}%` : ""}. Worked example on a CIF of ${inr(product.typicalCifInr)} → landed ${inr(example.landed)}. HSN ${hsnEntry.hsn}.`;
+  const canonical = `${SITE.origin}/duty/${product.slug}/`;
+
+  const personaHtml = product.personaHooks
+    .map((h) => `<li>${esc(h)}</li>`)
+    .join("");
+
+  const faqHtml = product.faqs
+    .map(
+      (f) => `
+  <div class="faq-item">
+    <h3>${esc(f.q)}</h3>
+    <p>${esc(f.a)}</p>
+  </div>`,
+    )
+    .join("");
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: product.faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: product.h1,
+    description,
+    author: { "@type": "Organization", name: SITE.name },
+    publisher: { "@type": "Organization", name: SITE.name },
+    datePublished: "2026-04-24",
+    dateModified: "2026-04-24",
+    mainEntityOfPage: canonical,
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.origin + "/" },
+      { "@type": "ListItem", position: 2, name: "Duty by product", item: SITE.origin + "/duty/" },
+      { "@type": "ListItem", position: 3, name: product.name, item: canonical },
+    ],
+  };
+
+  const body = `
+<article class="guide">
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><a href="/duty/">Duty by product</a><span class="sep">›</span><span>${esc(product.name)}</span></nav>
+
+  <header class="guide-header">
+    <span class="eyebrow">Duty on ${esc(product.name)} · Updated April 2026</span>
+    <h1>${esc(product.h1)}</h1>
+    <p class="lead">HSN <a href="${hsnUrl(hsnEntry.hsn)}">${hsnEntry.hsn}</a> · ${esc(hsnEntry.description)} · Chapter <a href="${chapterUrl(ch)}">${ch}</a>. Worked example on ${esc(product.typicalScenario)}, CIF ${inr(product.typicalCifInr)}.</p>
+  </header>
+
+  <aside class="tldr">
+    <strong>TL;DR.</strong> ${esc(product.keyInsight)}
+  </aside>
+
+  <section>
+    <h2>Duty rates at a glance</h2>
+    <div class="rates-grid">
+      <div class="rate-card"><div class="rate-card-label">BCD</div><div class="rate-card-val">${hsnEntry.bcd}%</div><div class="rate-card-sub">Basic Customs Duty</div></div>
+      <div class="rate-card"><div class="rate-card-label">SWS</div><div class="rate-card-val">${hsnEntry.sws}%</div><div class="rate-card-sub">of BCD</div></div>
+      ${hsnEntry.cess ? `<div class="rate-card"><div class="rate-card-label">Cess</div><div class="rate-card-val">${hsnEntry.cess}%</div><div class="rate-card-sub">Comp. Cess</div></div>` : ""}
+      <div class="rate-card"><div class="rate-card-label">IGST</div><div class="rate-card-val">${hsnEntry.igst}%</div><div class="rate-card-sub">Integrated GST</div></div>
+      <div class="rate-card" style="background:var(--brand-soft); border-color:var(--brand);"><div class="rate-card-label" style="color:var(--brand-dark)">Effective</div><div class="rate-card-val" style="color:var(--brand-dark)">${example.effectiveRate}%</div><div class="rate-card-sub">All-in on AV</div></div>
+    </div>
+    ${hsnEntry.notes ? `<p class="note">${esc(hsnEntry.notes)}</p>` : ""}
+  </section>
+
+  <section>
+    <h2>Who's asking this question</h2>
+    <p>This page gets searched by three kinds of people:</p>
+    <ul>${personaHtml}</ul>
+    <p>The duty calculation is the same for everyone — what differs is whether you can claim IGST as input credit (GST-registered businesses can; individuals can't) and whether baggage rules let you bring it in personally.</p>
+  </section>
+
+  <section>
+    <h2>Worked example · CIF ${inr(product.typicalCifInr)}</h2>
+    <p>${esc(product.typicalScenario.charAt(0).toUpperCase() + product.typicalScenario.slice(1))}. CIF (cost + insurance + freight) in INR: <strong>${inr(product.typicalCifInr)}</strong>. The assessable value is CIF + 1% landing charges.</p>
+    <table>
+      <tr><td>CIF value</td><td class="num">${inr(product.typicalCifInr)}</td></tr>
+      <tr><td>+ 1% landing charges</td><td class="num">${inr(product.typicalCifInr * 0.01)}</td></tr>
+      <tr><td><strong>Assessable Value</strong></td><td class="num"><strong>${inr(example.av)}</strong></td></tr>
+      <tr><td>BCD @ ${hsnEntry.bcd}%</td><td class="num">${inr(example.bcd)}</td></tr>
+      <tr><td>SWS @ ${hsnEntry.sws}% of BCD</td><td class="num">${inr(example.sws)}</td></tr>
+      ${hsnEntry.cess ? `<tr><td>Compensation Cess @ ${hsnEntry.cess}%</td><td class="num">${inr(example.cess)}</td></tr>` : ""}
+      <tr><td>IGST @ ${hsnEntry.igst}% of (AV + BCD + SWS${hsnEntry.cess ? " + Cess" : ""})</td><td class="num">${inr(example.igst)}</td></tr>
+      <tr class="total"><td>Total duty</td><td class="num">${inr(example.totalDuty)}</td></tr>
+      <tr class="total"><td>Landed cost</td><td class="num">${inr(example.landed)}</td></tr>
+    </table>
+    <p><strong>Effective duty rate: ${example.effectiveRate}%</strong> on the assessable value. Want to run your own numbers? Use the <a href="/calculator/?hsn=${hsnEntry.hsn}">duty calculator</a> — it pre-loads the rates for HSN ${hsnEntry.hsn}.</p>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    ${faqHtml}
+  </section>
+
+  <section>
+    <h2>Related</h2>
+    <ul>
+      <li><a href="${hsnUrl(hsnEntry.hsn)}">HSN ${hsnEntry.hsn} — ${esc(hsnEntry.description)}</a> — the underlying classification.</li>
+      <li><a href="/guide/customs-duty/">India customs duty, explained</a> — the full walkthrough of how the four-part duty stack works.</li>
+      <li><a href="/calculator/">Duty calculator</a> — plug in any HSN and CIF value to get the full breakdown.</li>
+      <li><a href="${chapterUrl(ch)}">Chapter ${ch} — ${esc(tidy(hsnEntry.description))}</a> — other HSNs in the same chapter.</li>
+    </ul>
+  </section>
+
+  <section class="verification">
+    <h2>Rate verification</h2>
+    ${verificationBlock(hsnEntry)}
+  </section>
+</article>`;
+
+  const jsonLdScripts = [articleJsonLd, breadcrumbJsonLd, faqJsonLd]
+    .map((ld) => `<script type="application/ld+json">${JSON.stringify(ld)}</script>`)
+    .join("\n");
+
+  return layout({ title, description, canonical, bodyHtml: body, extraHeadHtml: jsonLdScripts });
+}
+
+// ————— /duty/ index —————
+export function dutyIndexPage(products, byHsn) {
+  const title = `Customs duty on imported goods in India — by product — ${SITE.name}`;
+  const description = `Customs duty on imported products in India: iPhone, laptop, gold, whisky, perfume, watch, solar panel, car, PlayStation and more. Each with HSN, duty breakdown and worked example.`;
+  const canonical = SITE.origin + "/duty/";
+
+  const rows = products
+    .map((p) => {
+      const h = byHsn.get(p.hsn);
+      const example = computeDuty(p.typicalCifInr, h);
+      return `<tr><td><a href="/duty/${p.slug}/">${esc(p.name)}</a></td><td>${esc(h.description)}</td><td class="num">${h.bcd}%</td><td class="num">${h.igst}%</td><td class="num">${example.effectiveRate}%</td></tr>`;
+    })
+    .join("");
+
+  const body = `
+<article>
+  <nav class="crumbs"><a href="/">Home</a><span class="sep">›</span><span>Duty by product</span></nav>
+  <div class="hsn-hero">
+    <span class="hsn-code">Duty · by product</span>
+    <h1>Customs duty on imported goods in India</h1>
+    <p class="lead">How much you actually pay when you import a specific product — HSN, rate stack and a worked example on every page.</p>
+  </div>
+  <div class="table-wrap">
+    <h2>Products</h2>
+    <table class="listing">
+      <thead><tr><th>Product</th><th>Classified as</th><th class="num">BCD</th><th class="num">IGST</th><th class="num">Effective</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>
+  <p>Don't see what you're importing? Use the <a href="/">search bar</a> to find the HSN, or plug your rates into the <a href="/calculator/">calculator</a>.</p>
+</article>`;
+  return layout({ title, description, canonical, bodyHtml: body });
 }
 
 // ————— Pillar guide: /guide/customs-duty/ —————
@@ -754,13 +983,19 @@ export function aboutPage() {
     <ul>
       <li>HS 2-/4-/6-digit nomenclature: <strong>World Customs Organization (WCO) Harmonized System 2022</strong>, via <a href="https://github.com/datasets/harmonized-system" rel="nofollow noopener">datasets/harmonized-system</a> (ODC-PDDL public domain).</li>
       <li>8-digit HSN classifications: <strong>ITC(HS) 2022 Schedule 1</strong>, published by the Directorate General of Foreign Trade (DGFT).</li>
-      <li>Rate structure: <strong>Customs Tariff Act Schedule I</strong>, as amended by the Finance Act and CBIC notifications.</li>
-      <li>GST rate: <strong>CBIC GST Rate Schedule</strong>.</li>
+      <li>Consolidated effective rates: <strong>CBIC Notification No. 45/2025-Customs</strong> dated 24-Oct-2025 — the master exemption notification superseding 29 prior notifications including 50/2017-Customs. We parse this PDF locally and apply it on top of the statutory First Schedule rates.</li>
+      <li>Amendments: <strong>CBIC Notification No. 02/2026-Customs</strong> dated 1-Feb-2026 — Budget 2026-27 deletions and date-limit extensions to 45/2025.</li>
+      <li>Rate-change narrative: <strong>TRU D.O. Letter (Annexure I)</strong> — the Tax Research Unit's chapter-wise explainer released with Budget 2026-27.</li>
+      <li>Statutory base rates: <strong>First Schedule to the Customs Tariff Act, 1975</strong> (not currently published as a single free machine-readable file by the Government of India; where we use it, every such page carries a "statutory First Schedule rate" disclaimer).</li>
     </ul>
   </section>
   <section>
-    <h2>Update cadence</h2>
-    <p>Rates are reviewed after every CBIC rate-change notification and on each Finance Act.</p>
+    <h2>How this is refreshed</h2>
+    <p>Rates flagged <strong>Confirmed against Notification 45/2025-Customs</strong> are cross-checked against the parsed text of the CBIC notification. Rates flagged <strong>Statutory First Schedule rate</strong> are the commonly-cited base rate from the Customs Tariff Act, subject to verification against the current notification for each specific shipment. Whenever CBIC publishes a new consolidated exemption notification (typically after the Union Budget), the source PDFs in this repo are re-downloaded, the seed dataset re-verified, and any changed rates are flagged in the commit history. The process is documented in <code>scripts/REFRESH.md</code> of the source repository.</p>
+  </section>
+  <section>
+    <h2>Honesty</h2>
+    <p>We currently publish verified rates for a curated set of high-interest HSNs. The full 8-digit tariff (≈21,000 lines) is not publicly available as a bulk machine-readable file from any Government of India source. Commercial providers (Taxmann, R.K. Jain, Seair) publish it as an annual book or API. Expanding our coverage is a planned reinvestment of future revenue. Until then, pages for HSNs not in our verified set show the global 6-digit WCO classification only, and link out to the CBIC tariff for rate verification.</p>
   </section>
   <section>
     <h2>Disclaimer</h2>
